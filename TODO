@@ -1,4 +1,8 @@
-* Add the rev parameter.
+* Write documentation.
+
+* Bump the version number to 0.2.0.
+
+* Put on CPAN.
 
 * Implement Caching.
 
