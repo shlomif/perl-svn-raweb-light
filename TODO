@@ -1,8 +1,5 @@
-* Write documentation.
-
-* Bump the version number to 0.2.0.
-
-* Put on CPAN.
+* Fix the bug with the ?rev=${HEAD} leading to a no-URL and other rev=
+  related bugs.
 
 * Implement Caching.
 
