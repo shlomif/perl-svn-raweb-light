@@ -82,8 +82,15 @@ sub run
     }
     elsif ($node_kind eq $SVN::Node::file)
     {
-        print $cgi->header();
-        print "<h1>A File!</h1>";
+        my $buffer = "";
+        open my $fh, ">", \$buffer;
+        my ($fetched_rev, $props)
+            = $svn_ra->get_file($path, $rev_num, $fh);
+        print $cgi->header( 
+            -type => ($props->{'svn:mime-type'} || 'text/plain')
+            );
+        print $buffer;
+        close($fh);
     }
     else
     {
@@ -147,7 +154,7 @@ If you have a web site set up for your module, mention it here.
 
 =head1 AUTHOR
 
-Shlomi Fish, E<lt>shlomi@mandrakesoft.comE<gt>
+Shlomi Fish, E<lt>shlomif@iglu.org.ilE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
