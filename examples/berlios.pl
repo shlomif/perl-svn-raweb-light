@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use lib "./lib";
-
 use SVN::RaWeb::Light;
 
 my $app = SVN::RaWeb::Light->new(
