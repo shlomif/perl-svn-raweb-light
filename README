@@ -1,6 +1,13 @@
 SVN-RaWeb-Light
 ===============
 
+ABOUT
+
+SVN-RaWeb-Light is a module implementing a CGI script for viewing a possibly
+remote Subversion repository, with an interface much like the default 
+Subversion HTTP one for the http:// protocol. One improvement it has is
+the ability to specify a "rev" CGI parameter for the revision.
+
 INSTALLATION
 
 To install this module type the following:

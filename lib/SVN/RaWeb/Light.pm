@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.2.1';
+$VERSION = '0.2.2';
 
 use CGI;
 
@@ -154,7 +154,7 @@ __END__
 =head1 NAME
 
 SVN::RaWeb::Light - Lightweight and Fast Browser for a URLed Subversion 
-repository.
+repository similar to the default Subversion http:// hosting.
 
 =head1 SYNOPSIS
 
@@ -172,10 +172,13 @@ repository.
 
 SVN::RaWeb::Light is a class implementing a CGI script for browsing
 a Subversion repository given as a URL, and accessed through the Subversion
-Repository-Access layer. To use it, install the module (using CPAN or by
-copying it to your path) and write the CGI script given in the SYNOPSIS
-with the URL to the repository passed as the C<'url'> parameter to 
-the constructor.
+Repository-Access layer. Its interface emulates that of the default
+Subversion http://-interface, only with the improvement of a C<rev> CGI 
+parameter to specify the revision of the repository.
+
+To use it, install the module (using CPAN or by copying it to your path) and 
+write the CGI script given in the SYNOPSIS with the URL to the repository 
+passed as the C<'url'> parameter to the constructor.
 
 To use it just fire up a web-browser to the URL of the script. Note that
 you can pass the rev CGI parameter to designate a revision of the repository
