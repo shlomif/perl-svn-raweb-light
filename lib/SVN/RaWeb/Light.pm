@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.1.1';
+$VERSION = '0.1.2';
 
 use CGI;
 
@@ -134,41 +134,42 @@ sub multi_slashes
 
 
 __END__
-# Below is stub documentation for your module. You'd better edit it!
+
 
 =head1 NAME
 
-SVN::RaWeb::Light - Perl extension for blah blah blah
+SVN::RaWeb::Light - Lightweight and Fast Browser for a URLed Subversion 
+repository.
 
 =head1 SYNOPSIS
 
-  use SVN::RaWeb::Light;
-  blah blah blah
+    #!/usr/bin/perl
+
+    use SVN::RaWeb::Light;
+
+    my $app = SVN::RaWeb::Light->new(
+        'url' => "svn://myhost.net/my-repos-path/",
+    );
+
+    $app->run();
 
 =head1 DESCRIPTION
 
-Stub documentation for SVN::RaWeb::Light, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+SVN::RaWeb::Light is a class implementing a CGI script for browsing
+a Subversion repository given as a URL, and accessed through the Subversion
+Repository-Access layer. To use it, install the module (using CPAN or by
+copying it to your path) and write the CGI script given in the SYNOPSIS
+with the URL to the repository passed as the C<'url'> parameter to 
+the constructor.
 
-Blah blah blah.
+To use it just fire up a web-browser to the URL of the script. Note that
+you can pass the rev CGI parameter to designate a revision of the repository
+to browse instead of HEAD. This rev will be preserved to subsequent URLs
+that you browse. For example:
 
-=head2 EXPORT
-
-None by default.
-
-
-
-=head1 SEE ALSO
-
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+    http://www.myhost.net/ra-web-light/web-cpan/trunk/?rev=20
+ 
+will browse the trunk in revision 20.
 
 =head1 AUTHOR
 
@@ -179,8 +180,6 @@ Shlomi Fish, E<lt>shlomif@iglu.org.ilE<gt>
 Copyright (C) 2004 by Shlomi Fish
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.5 or,
-at your option, any later version of Perl 5 you may have available.
-
+it under the terms of the MIT/X11 license.
 
 =cut
