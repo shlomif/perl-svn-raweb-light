@@ -1,5 +1,8 @@
-* Fix the bug with the ?rev=${HEAD} leading to a no-URL and other rev=
-  related bugs.
+* Fix the bug with the ?rev=${HEAD} leading to a no-URL and the one with
+  the rev=0.
+
+* Fix the bug with the .. directory appearing in the top directory of the 
+CGI script.
 
 * Implement Caching.
 
