@@ -57,11 +57,22 @@ sub run
     $path =~ s!^/!!;
     my $should_be_dir = (($path eq "") || ($path =~ s{/$}{}));
 
-    my $latest_rev = $svn_ra->get_latest_revnum();
+    my $rev_param = $cgi->param('rev');
+    
+    my ($rev_num, $url_suffix);
 
-    my $rev_num = (abs(int($cgi->param('rev'))) || $latest_rev);
-
-    my $url_suffix = (($rev_num == $latest_rev) ? "" : "?rev=$rev_num");
+    # If a revision is specified - get the tree out of it, and persist with
+    # it throughout the browsing session. Otherwise, get the latest revision.
+    if (defined($rev_param))
+    {
+        $rev_num = abs(int($rev_param));
+        $url_suffix = "?rev=$rev_num";
+    }
+    else
+    {
+        $rev_num = $svn_ra->get_latest_revnum();
+        $url_suffix = "";
+    }
 
     my $node_kind = $svn_ra->check_path($path, $rev_num);
 
