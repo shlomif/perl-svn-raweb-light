@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.2.2';
+$VERSION = '0.3.0_00';
 
 use CGI;
 
@@ -39,7 +39,19 @@ sub initialize
 
     $self->{'svn_ra'} = $svn_ra;
 
+    my $url_translations = $args{'url_translations'} || [];
+    $self->{'url_translations'} = $url_translations;
+
     return $self;
+}
+
+# TODO :
+# Create a way for the user to specify one extra url translation of his own.
+sub get_url_translations
+{
+    my $self = shift;
+
+    return [ @{$self->{'url_translations'}} ];
 }
 
 sub run
@@ -90,6 +102,18 @@ sub run
         print "<html><head><title>$title</title></head>\n";
         print "<body>\n";
         print "<h2>$title</h2>\n";
+        my $url_translations = $self->get_url_translations();
+        if (@$url_translations)
+        {
+            print "<table border=\"1\">\n";
+            foreach my $trans (@$url_translations)
+            {
+                my $url = CGI::escapeHTML($trans->{'url'} . $path);
+                my $label = CGI::escapeHTML($trans->{'label'});
+                print "<tr><td><a href=\"$url\">$label</a></td></tr>\n";
+            }
+            print "</table>\n";
+        }
         print "<ul>\n";
         # If the path is the root - then we cannot have an upper directory
         if ($path ne "")
