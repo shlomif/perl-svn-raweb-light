@@ -1,0 +1,6 @@
+Revision history for Perl extension SVN::RaWeb::Light.
+
+0.01  Mon Nov  8 19:20:12 2004
+	- original version; created by h2xs 1.23 with options
+		-X -n SVN::RaWeb::Light
+
