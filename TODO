@@ -1,2 +1,4 @@
-* Make sure paths ending with slash are directories and those that don't
-are files.
+* Add the rev parameter.
+
+* Implement Caching.
+

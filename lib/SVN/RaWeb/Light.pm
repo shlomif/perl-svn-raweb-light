@@ -55,9 +55,13 @@ sub run
     }
 
     $path =~ s!^/!!;
-    my $should_be_dir = ($path =~ s{/$}{});
+    my $should_be_dir = (($path eq "") || ($path =~ s{/$}{}));
 
-    my $rev_num = $svn_ra->get_latest_revnum();
+    my $latest_rev = $svn_ra->get_latest_revnum();
+
+    my $rev_num = (abs(int($cgi->param('rev'))) || $latest_rev);
+
+    my $url_suffix = (($rev_num == $latest_rev) ? "" : "?rev=$rev_num");
 
     my $node_kind = $svn_ra->check_path($path, $rev_num);
 
@@ -76,13 +80,13 @@ sub run
         print "<body>\n";
         print "<h2>$title</h2>\n";
         print "<ul>\n";
-        print "<li><a href=\"../\">..</a></li>\n";
+        print "<li><a href=\"../$url_suffix\">..</a></li>\n";
         print map { my $escaped_name = CGI::escapeHTML($_); 
             if ($dir_contents->{$_}->kind() eq $SVN::Node::dir)
             {
                 $escaped_name .= "/";
             }
-            "<li><a href=\"$escaped_name\">$escaped_name</a></li>\n"
+            "<li><a href=\"$escaped_name$url_suffix\">$escaped_name</a></li>\n"
             } sort { $a cmp $b } keys(%$dir_contents);
         print "</ul>\n";
         print "</body></html>\n";
