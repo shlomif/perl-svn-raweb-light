@@ -49,25 +49,32 @@ sub run
     my $svn_ra = $self->{'svn_ra'};
     my $path_info = $cgi->path_info();
     my $path = $path_info;
-    $path =~ s!^/!!;
-    my $should_be_dir = ($path =~ s{/$}{});
     if ($path =~ /\/\//)
     {
         return $self->multi_slashes();
     }
-    
-        
+
+    $path =~ s!^/!!;
+    my $should_be_dir = ($path =~ s{/$}{});
+
     my $rev_num = $svn_ra->get_latest_revnum();
 
     my $node_kind = $svn_ra->check_path($path, $rev_num);
 
     if ($node_kind eq $SVN::Node::dir)
     {
+        if (! $should_be_dir)
+        {
+            $path =~ m{([^/]+)$};
+            print $cgi->redirect("./$1/");
+            return;
+        }
         my ($dir_contents, $fetched_rev) = $svn_ra->get_dir($path, $rev_num);
+        my $title = "Revision $rev_num: /" . CGI::escapeHTML($path);
         print $cgi->header();
-        print "<html><head><title>Revision $rev_num: </title></head>\n";
+        print "<html><head><title>$title</title></head>\n";
         print "<body>\n";
-        print "<h2>Revision $rev_num: </h2>\n";
+        print "<h2>$title</h2>\n";
         print "<ul>\n";
         print "<li><a href=\"../\">..</a></li>\n";
         print map { my $escaped_name = CGI::escapeHTML($_); 
@@ -82,6 +89,13 @@ sub run
     }
     elsif ($node_kind eq $SVN::Node::file)
     {
+        if ($should_be_dir)
+        {
+            $path =~ m{([^/]+)$};
+            print $cgi->redirect("../$1");
+            return;
+        }
+        
         my $buffer = "";
         open my $fh, ">", \$buffer;
         my ($fetched_rev, $props)
