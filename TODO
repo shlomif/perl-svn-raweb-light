@@ -1,10 +1,2 @@
-* Fix the bug with the ?rev=${HEAD} leading to a non-rev= URL and the one with
-  the rev=0.
-
-* Fix the bug with the .. directory appearing in the top directory of the 
-CGI script.
-
-* Bump the version to 0.2.1.
-
 * Implement Caching.
 

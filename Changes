@@ -1,6 +1,12 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
-0.2.0  Tue Nov 09 
+0.2.1  Thu Nov 11, 2004
+    - Fixed the bug with the ?rev=${HEAD} leading to a non-rev= URL and the one 
+    with the rev=0 being ignored.
+    - Fix the bug with the .. directory listed in the top directory of the 
+    CGI script.
+
+0.2.0  Tue Nov 09, 2004
     First Stable Release.
     Browse a single repository using a URL parameter.
     The rev parameter.
