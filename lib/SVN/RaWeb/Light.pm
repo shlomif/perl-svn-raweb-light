@@ -91,7 +91,11 @@ sub run
         print "<body>\n";
         print "<h2>$title</h2>\n";
         print "<ul>\n";
-        print "<li><a href=\"../$url_suffix\">..</a></li>\n";
+        # If the path is the root - then we cannot have an upper directory
+        if ($path ne "")
+        {
+            print "<li><a href=\"../$url_suffix\">..</a></li>\n";
+        }
         print map { my $escaped_name = CGI::escapeHTML($_); 
             if ($dir_contents->{$_}->kind() eq $SVN::Node::dir)
             {
