@@ -5,6 +5,7 @@ Makefile.PL
 MANIFEST
 README
 t/SVN-RaWeb-Light.t
+t/01output.t
 lib/SVN/RaWeb/Light.pm
 examples/berlios.pl
 META.yml                                 Module meta-data (added by MakeMaker)
