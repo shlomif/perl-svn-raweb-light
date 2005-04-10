@@ -1,8 +1,16 @@
-* Implement Caching.
-
 * URL Translations:
     - Document in the POD.
     - Document in Changes.
     - Implement the avoid URL translations CGI param.
     - Implement the user-specified URL translation.
+    - Implement URL translations after the directory listing.
+    - Implement the user-defined URL translation.
 
+* Add a Help Screen 
+
+* Add a Control Console.
+
+Long-Term:
+----------
+
+* Implement Caching.
