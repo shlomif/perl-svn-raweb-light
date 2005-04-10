@@ -8,6 +8,7 @@ WriteMakefile(
         {
             'SVN::Ra' => 0,
             'CGI' => 0,
+            'IO::Scalar' => 0,
         }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM  => 'lib/SVN/RaWeb/Light.pm', # retrieve abstract from module
     AUTHOR         => 'Shlomi Fish <shlomif@iglu.org.il>',
