@@ -94,7 +94,7 @@ sub get_dir
             map 
             { 
                 $_ => 
-                    SVN::Mock::DirEntry->new($_, $dir_contents->{$_}) 
+                    SVN::RaWeb::Light::Mock::DirEntry->new($_, $dir_contents->{$_}) 
             }
             keys(%$dir_contents)
         }, $fetched_rev);
@@ -108,6 +108,36 @@ BEGIN
 
 $SVN::Node::dir = "dir";
 $SVN::Node::file = "file";
+
+package SVN::RaWeb::Light::Mock::DirEntry;
+
+sub new
+{
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    $self->initialize(@_);
+    return $self;
+}
+
+sub initialize
+{
+    my $self = shift;
+    my $filename = shift;
+    my $params = shift;
+    $self->{'filename'} = $filename;
+    $self->{'kind'} = $params->{'kind'};
+    return 0;
+}
+
+sub kind
+{
+    my $self = shift;
+    return $self->{'kind'};
+}
+
+1;
+
 
 1;
 
