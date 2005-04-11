@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.3.0_00';
+$VERSION = '0.3.1_00';
 
 use CGI;
 
