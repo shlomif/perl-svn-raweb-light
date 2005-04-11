@@ -10,6 +10,7 @@ WriteMakefile(
             'CGI' => 0,
             'IO::Scalar' => 0,
             'Class::Accessor' => 0,
+            'Test::More' => 0,
         }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM  => 'lib/SVN/RaWeb/Light.pm', # retrieve abstract from module
     AUTHOR         => 'Shlomi Fish <shlomif@iglu.org.il>',
