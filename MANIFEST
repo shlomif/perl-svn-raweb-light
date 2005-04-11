@@ -10,5 +10,6 @@ lib/SVN/RaWeb/Light.pm
 examples/berlios.pl
 META.yml                                 Module meta-data (added by MakeMaker)
 SVN/RaWeb/Light/Mock/CGI.pm
+SVN/RaWeb/Light/Mock/Stdout.pm
 SVN/RaWeb/Light/Mock/Svn.pm
 TODO

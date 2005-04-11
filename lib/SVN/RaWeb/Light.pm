@@ -163,7 +163,7 @@ sub multi_slashes
     my $cgi = $self->{'cgi'};
     print $cgi->header();
     print "<html><head><title>Wrong URL!</title></head>";
-    print "<body><h1>Wrong URL - Multiple Slashes in the URL." . 
+    print "<body><h1>Wrong URL - Multiple Adjacent Slashes (//) in the URL." . 
         "</h1></body></html>";
 }
 
