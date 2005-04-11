@@ -108,7 +108,8 @@ BEGIN
 
 $SVN::Node::dir = "dir";
 $SVN::Node::file = "file";
-$SVN::Node::notexist = "notexist";
+$SVN::Node::none = "notexist";
+$SVN::Node::unknown = "unknown";
 
 package SVN::RaWeb::Light::Mock::DirEntry;
 

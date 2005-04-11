@@ -125,7 +125,7 @@ use SVN::RaWeb::Light;
             my ($self, $path, $rev_num) = @_;
             if ($path eq "trunk/not-exist")
             {
-                return $SVN::Node::notexist;
+                return $SVN::Node::none;
             }
             die "Wrong path queried - $path.";
         },

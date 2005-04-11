@@ -103,6 +103,45 @@ sub calc_path
     $self->path($path);
 }
 
+sub get_correct_node_kind
+{
+    my $self = shift;
+    return $self->should_be_dir() ? $SVN::Node::dir : $SVN::Node::file;
+}
+
+sub check_node_kind
+{
+    my $self = shift;
+    my $node_kind = shift;
+
+    if (($node_kind eq $SVN::Node::none) || ($node_kind eq $SVN::Node::unknown))
+    {
+        die +{
+            'callback' =>
+                sub {
+                    print $self->cgi()->header();
+                    print "<html><head><title>Does not exist!</title></head>";
+                    print "<body><h1>Does not exist!</h1></body></html>";
+                },
+        };        
+    }
+    elsif ($node_kind ne $self->get_correct_node_kind())
+    {
+        die +{
+            'callback' =>
+                sub {
+                    $self->path() =~ m{([^/]+)$};
+                    print $self->cgi()->redirect(
+                        ($node_kind eq $SVN::Node::dir) ? 
+                            "./$1/" :
+                            "../$1"
+                        );
+                },
+        };
+    }
+}
+
+
 sub real_run
 {
     my $self = shift;
@@ -110,17 +149,13 @@ sub real_run
     $self->calc_rev_num();
     $self->calc_path();
 
-    my $node_kind = 
+    my $node_kind =
         $self->svn_ra()->check_path($self->path(), $self->rev_num());
+
+    $self->check_node_kind($node_kind);
 
     if ($node_kind eq $SVN::Node::dir)
     {
-        if (! $self->should_be_dir())
-        {
-            $self->path() =~ m{([^/]+)$};
-            print $cgi->redirect("./$1/");
-            return;
-        }
         my ($dir_contents, $fetched_rev) = 
             $self->svn_ra()->get_dir($self->path(), $self->rev_num());
         my $title = "Revision ". $self->rev_num() . ": /" . 
@@ -159,13 +194,6 @@ sub real_run
     }
     elsif ($node_kind eq $SVN::Node::file)
     {
-        if ($self->should_be_dir())
-        {
-            $self->path() =~ m{([^/]+)$};
-            print $cgi->redirect("../$1");
-            return;
-        }
-        
         my $buffer = "";
         open my $fh, ">", \$buffer;
         my ($fetched_rev, $props)
@@ -175,12 +203,6 @@ sub real_run
             );
         print $buffer;
         close($fh);
-    }
-    else
-    {
-        print $cgi->header();
-        print "<html><head><title>Does not exist!</title></head>";
-        print "<body><h1>Does not exist!</h1></body></html>";
     }
 }
 
