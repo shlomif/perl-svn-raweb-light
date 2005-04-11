@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 9;
+use Test::More tests => 13;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -141,4 +141,52 @@ use SVN::RaWeb::Light;
     is($svn_ra_web->url_suffix(), "", 
         "Checking url_suffix() when rev isn't speicified"
     );
+}
+
+{
+    @CGI::new_params = 
+    (
+        'path_info' => "/trunk/build.txt", 
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web = 
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    $svn_ra_web->calc_path();
+
+    # TEST
+    is($svn_ra_web->path(), "trunk/build.txt",
+        "Checking path()"
+    );
+
+    # TEST
+    ok((!$svn_ra_web->should_be_dir()), "Checking shoudl_be_dir()");
+}
+
+{
+    @CGI::new_params = 
+    (
+        'path_info' => "/trunk/src/perl/", 
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web = 
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    $svn_ra_web->calc_path();
+
+    # TEST
+    is($svn_ra_web->path(), "trunk/src/perl",
+        "Checking path()"
+    );
+
+    # TEST
+    ok($svn_ra_web->should_be_dir(), "Checking should_be_dir()");
 }
