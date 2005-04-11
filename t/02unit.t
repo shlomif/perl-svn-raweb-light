@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -109,5 +109,36 @@ use SVN::RaWeb::Light;
     # TEST
     is($svn_ra_web->url_suffix(), "?rev=600", 
         "Checking for url_suffix() when rev is speicified"
+    );
+}
+
+{
+    @CGI::new_params = 
+    (
+        'path_info' => "/trunk/build.txt", 
+    );
+
+    @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub { return 5267; },
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web = 
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    $svn_ra_web->calc_rev_num();
+
+    # TEST
+    is($svn_ra_web->rev_num(), "5267",
+        "Checking rev_num() when it isn't specified"
+    );
+
+    # TEST
+    is($svn_ra_web->url_suffix(), "", 
+        "Checking url_suffix() when rev isn't speicified"
     );
 }
