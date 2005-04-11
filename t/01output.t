@@ -26,7 +26,7 @@ use SVN::RaWeb::Light;
     $svn_ra_web->run();
 }
 
-# Checking for multiple slashes.
+# Checking for multiple adjacent slashes.
 {
     @CGI::new_params = ('path_info' => "/hello//you/");
 

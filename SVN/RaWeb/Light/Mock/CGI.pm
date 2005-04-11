@@ -58,7 +58,7 @@ sub header
 {
     my $self = shift;
     
-    print "Content-Type: text/html\n\n";
+    return "Content-Type: text/html\n\n";
 }
 
 sub escapeHTML
