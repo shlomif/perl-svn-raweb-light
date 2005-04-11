@@ -110,7 +110,8 @@ sub real_run
     $self->calc_rev_num();
     $self->calc_path();
 
-    my $node_kind = $self->svn_ra()->check_path($self->path(), $self->rev_num());
+    my $node_kind = 
+        $self->svn_ra()->check_path($self->path(), $self->rev_num());
 
     if ($node_kind eq $SVN::Node::dir)
     {
@@ -192,10 +193,16 @@ sub run
         @ret = $self->real_run();
     };
 
-    print STDERR $@;
     if ($@)
     {
-        return $@->{'callback'}->();
+        if ((ref($@) eq "HASH") && (exists($@->{'callback'})))
+        {
+            return $@->{'callback'}->();
+        }
+        else
+        {
+            die $@;
+        }
     }
     else
     {
