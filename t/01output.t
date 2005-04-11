@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -155,7 +155,6 @@ use SVN::RaWeb::Light;
 }
 
 # Test the directory output for a regular (non-root) directory.
-# TODO: test for a root directory.
 # TODO: test for a directory with a specified revision.
 # TODO: check for file output
 # TODO: check with url_translations.
@@ -237,6 +236,86 @@ use SVN::RaWeb::Light;
         
 }
 
+# Test the directory output for the root directory
+{
+    local @CGI::new_params = ('path_info' => "/");
 
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "")
+            {
+                return $SVN::Node::dir;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_dir' => sub {
+            my $self = shift;
+            my $path = shift;
+            my $rev_num = shift;
+
+            if ($path ne "")
+            {
+                die "Wrong Path - $path";
+            }
+
+            if ($rev_num != 10900)
+            {
+                die "Wrong rev_num - $rev_num";
+            }
+    
+            return 
+            (
+                {
+                    'yowza.txt' => 
+                    { 
+                        'kind' => $SVN::Node::file,
+                    },
+                    'the-directory' =>
+                    {
+                        'kind' => $SVN::Node::dir,
+                    },
+                    'parser' =>
+                    {
+                        'kind' => $SVN::Node::file,
+                    },
+                },
+                $rev_num
+            );
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    # TEST
+    ok(!$@, "Testing that no exception was thrown.");
+    
+    my $results = get_out_buffer();
+
+    # TEST
+    is($results, ("Content-Type: text/html\n\n" . 
+        "<html><head><title>Revision 10900: /</title></head>\n" .
+        "<body>\n" .
+        "<h2>Revision 10900: /</h2>\n" .
+        "<ul>\n" .
+        "<li><a href=\"parser\">parser</a></li>\n" .
+        "<li><a href=\"the-directory/\">the-directory/</a></li>\n" .
+        "<li><a href=\"yowza.txt\">yowza.txt</a></li>\n" .
+        "</ul>\n".
+        "</body></html>\n"),
+        "Checking for valid output of a dir listing in root");
+}
 1;
 

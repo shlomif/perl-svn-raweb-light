@@ -1,5 +1,4 @@
 * Test Suite - 01output.t:
-# TODO: test for a root directory.
 # TODO: test for a directory with a specified revision.
 # TODO: check for file output
 # TODO: check with url_translations.
