@@ -8,6 +8,7 @@ use vars qw($VERSION);
 $VERSION = '0.3.2_00';
 
 use CGI;
+use IO::Scalar;
 
 require SVN::Core;
 require SVN::Ra;
@@ -195,14 +196,13 @@ sub real_run
     elsif ($node_kind eq $SVN::Node::file)
     {
         my $buffer = "";
-        open my $fh, ">", \$buffer;
+        my $fh = IO::Scalar->new(\$buffer);
         my ($fetched_rev, $props)
             = $self->svn_ra()->get_file($self->path(), $self->rev_num(), $fh);
         print $cgi->header( 
             -type => ($props->{'svn:mime-type'} || 'text/plain')
             );
         print $buffer;
-        close($fh);
     }
 }
 
