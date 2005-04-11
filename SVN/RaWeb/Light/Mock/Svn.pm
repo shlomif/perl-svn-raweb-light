@@ -100,6 +100,12 @@ sub get_dir
         }, $fetched_rev);
 }
 
+sub get_file
+{
+    my $self = shift;
+    
+    return $self->{'get_file'}->($self,@_);
+}
 BEGIN
 {
     $INC{'SVN/Ra.pm'} = '/usr/lib/perl5/site_perl/5.8.6/i386-linux/SVN/Ra.pm';

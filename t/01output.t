@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -155,8 +155,8 @@ use SVN::RaWeb::Light;
 }
 
 # Test the directory output for a regular (non-root) directory.
-# TODO: check for file output
 # TODO: check with url_translations.
+# TODO: check for file output with a defualt mime type of text/plain.
 {
     local @CGI::new_params = ('path_info' => "/trunk/mydir/");
 
@@ -402,6 +402,53 @@ use SVN::RaWeb::Light;
         "Checking for valid output of a dir listing in root");
 }
 
+{
+    local @CGI::new_params = ('path_info' => "/trunk/mydir/myfile.txt");
 
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "trunk/mydir/myfile.txt")
+            {
+                return $SVN::Node::file;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_file' => sub {
+            my ($self, $path, $rev_num, $out_fh) = @_;
+            if ($path ne "trunk/mydir/myfile.txt")
+            {
+                die "Wrong path - $path";
+            }
+            if ($rev_num != 10900)
+            {
+                die "Wrong revision - $rev_num";
+            }
+            print {$out_fh} "<html><body>\nTesting One tWO t|-||/33 - Subversion ownz.\n</body></html>";
+            return (10900, { 'svn:mime-type' => "text/html", });
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
+        );
+
+    $svn_ra_web->run();
+
+    my $results = get_out_buffer();
+
+    # TEST
+    is($results, ("Content-Type: text/html\n\n" . 
+        "<html><body>\nTesting One tWO t|-||/33 - " . 
+        "Subversion ownz.\n</body></html>"),
+        "Testing for get_file()"
+    );
+}
 1;
 
