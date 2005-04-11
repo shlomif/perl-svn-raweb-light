@@ -57,8 +57,16 @@ sub redirect
 sub header
 {
     my $self = shift;
+
+    my %args = (@_);
+
+    my $type = "text/html";
+    if (exists($args{-type}))
+    {
+        $type = $args{-type};
+    }
     
-    return "Content-Type: text/html\n\n";
+    return "Content-Type: $type\n\n";
 }
 
 sub escapeHTML

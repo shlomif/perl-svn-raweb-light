@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 17;
+use Test::More tests => 18;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -402,6 +402,7 @@ use SVN::RaWeb::Light;
         "Checking for valid output of a dir listing in root");
 }
 
+# Checking the retrieving of a file.
 {
     local @CGI::new_params = ('path_info' => "/trunk/mydir/myfile.txt");
 
@@ -448,6 +449,56 @@ use SVN::RaWeb::Light;
         "<html><body>\nTesting One tWO t|-||/33 - " . 
         "Subversion ownz.\n</body></html>"),
         "Testing for get_file()"
+    );
+}
+
+
+# Checking the retrieving of a file without a mime type.
+{
+    local @CGI::new_params = ('path_info' => "/trunk/mydir/myfile.txt");
+
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "trunk/mydir/myfile.txt")
+            {
+                return $SVN::Node::file;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_file' => sub {
+            my ($self, $path, $rev_num, $out_fh) = @_;
+            if ($path ne "trunk/mydir/myfile.txt")
+            {
+                die "Wrong path - $path";
+            }
+            if ($rev_num != 10900)
+            {
+                die "Wrong revision - $rev_num";
+            }
+            print {$out_fh} "Yo, yo, yo!\nTime to get busy...\n";
+            return (10900, {});
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
+        );
+
+    $svn_ra_web->run();
+
+    my $results = get_out_buffer();
+
+    # TEST
+    is($results, ("Content-Type: text/plain\n\n" . 
+        "Yo, yo, yo!\nTime to get busy...\n"),
+        "Checking for retrieving a file with no mime type."
     );
 }
 1;
