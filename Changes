@@ -1,5 +1,11 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.4.0      Tue Apr 12 06:27:50 2005
+    - Added a test suite.
+    - Did some code cleanup.
+    - Fixed a bug where accessing the script without a leading / in the 
+    path_info did not redirect to the same URL only with a /.
+    
 0.2.2      Mon Nov 15 07:01:42 2004
     - Added an AUTHORS file
     - Updated the README and the POD document to make the intention of
