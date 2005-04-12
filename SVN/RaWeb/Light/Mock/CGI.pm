@@ -26,6 +26,7 @@ sub initialize
 
     $self->{'params'} = $args{'params'};
     $self->{'path_info'} = $args{'path_info'};
+    $self->{'script_name'} = $args{'script_name'};
 
     $self->{'out'} = "";
 }
@@ -42,6 +43,12 @@ sub path_info
 {
     my $self = shift;
     return $self->{'path_info'};
+}
+
+sub script_name
+{
+    my $self = shift;
+    return $self->{'script_name'};
 }
 
 sub redirect

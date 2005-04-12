@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 18;
+use Test::More tests => 21;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -15,7 +15,7 @@ use SVN::RaWeb::Light::Mock::Stdout;
 use SVN::RaWeb::Light;
 
 {
-    @CGI::new_params = ('path_info' => "");
+    @CGI::new_params = ('path_info' => "/trunk/hello/");
 
     reset_out_buffer();
 
@@ -500,6 +500,65 @@ use SVN::RaWeb::Light;
         "Yo, yo, yo!\nTime to get busy...\n"),
         "Checking for retrieving a file with no mime type."
     );
+}
+
+# Check that if the script is hosted at http://myhost.foo/serve.pl, and the
+# URL accessed is "http://myhost.foo/serve.pl" then it should redirect to 
+# http://myhost.foo/serve.pl/.
+{
+    local @CGI::new_params = 
+    (
+        'path_info' => "",
+        'script_name' => "/cgi-bin/shlomi/serve-67jyumber200.pl",
+    );
+
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "trunk/mydir/myfile.txt")
+            {
+                return $SVN::Node::file;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_file' => sub {
+            my ($self, $path, $rev_num, $out_fh) = @_;
+            if ($path ne "trunk/mydir/myfile.txt")
+            {
+                die "Wrong path - $path";
+            }
+            if ($rev_num != 10900)
+            {
+                die "Wrong revision - $rev_num";
+            }
+            print {$out_fh} "Yo, yo, yo!\nTime to get busy...\n";
+            return (10900, {});
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    my $exception = $@;
+
+    # TEST
+    ok($exception, "Checking for exception");
+    # TEST
+    is($exception->{'type'}, "redirect", "Excpecting type redirect");
+    # TEST
+    is($exception->{'redirect_to'}, "./serve-67jyumber200.pl/", 
+        "Right redirect URL");
 }
 1;
 
