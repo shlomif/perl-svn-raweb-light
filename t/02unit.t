@@ -62,8 +62,14 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
             [
-                "svn://svn-i.nodomain.foo/hello/",
-                "file:///home/shlomi/svn/foo/",
+                {
+                    'url' => "svn://svn-i.nodomain.foo/hello/",
+                    'label' => "nodomain",
+                },
+                {
+                    'url' => "file:///home/shlomi/svn/foo/",
+                    'label' => "myfile",
+                },
             ],
         );
 
@@ -75,7 +81,16 @@ use SVN::RaWeb::Light;
     # TEST
     is_deeply(
         $url_trans, 
-        [ "svn://svn-i.nodomain.foo/hello/", "file:///home/shlomi/svn/foo/",],
+        [
+            {
+                'url' => "svn://svn-i.nodomain.foo/hello/",
+                'label' => "nodomain",
+            },
+            {
+                'url' => "file:///home/shlomi/svn/foo/",
+                'label' => "myfile",
+            },
+        ],
         "Checking for url_trans being correct"
     );
 }
