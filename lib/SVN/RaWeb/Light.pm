@@ -56,7 +56,13 @@ sub get_url_translations
 {
     my $self = shift;
 
-    return [ @{$self->{'url_translations'}} ];
+    my $cgi = $self->cgi();
+
+    return [
+        $cgi->param('trans_hide_all') ?
+            () :
+            (@{$self->{'url_translations'}})
+    ];
 }
 
 # This function must be called before rev_num() and url_suffix() are valid.
