@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 21;
+use Test::More tests => 23;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -559,6 +559,102 @@ use SVN::RaWeb::Light;
     # TEST
     is($exception->{'redirect_to'}, "./serve-67jyumber200.pl/", 
         "Right redirect URL");
+}
+
+# Check for url_translations of a regular (non-root) directory.
+{
+    local @CGI::new_params = ('path_info' => "/trunk/mydir/");
+
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "trunk/mydir")
+            {
+                return $SVN::Node::dir;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_dir' => sub {
+            my $self = shift;
+            my $path = shift;
+            my $rev_num = shift;
+
+            if ($path ne "trunk/mydir")
+            {
+                die "Wrong Path - $path";
+            }
+
+            if ($rev_num != 10900)
+            {
+                die "Wrong rev_num - $rev_num";
+            }
+    
+            return 
+            (
+                {
+                    'hello.pm' => 
+                    { 
+                        'kind' => $SVN::Node::file,
+                    },
+                    'mydir' =>
+                    {
+                        'kind' => $SVN::Node::dir,
+                    },
+                },
+                $rev_num
+            );
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+            'url_translations' =>
+            [
+                {
+                    'label' => "Read-Only",
+                    'url' => "svn://svn.myhost.mytld/hello/there/",
+                },
+                {
+                    'label' => "Write",
+                    'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+                },
+            ],
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    # TEST
+    ok(!$@, "Testing that no exception was thrown.");
+    
+    my $results = get_out_buffer();
+
+    # TEST
+    is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
+Content-Type: text/html
+
+<html><head><title>Revision 10900: /trunk/mydir</title></head>
+<body>
+<h2>Revision 10900: /trunk/mydir</h2>
+<table border=\"1\">
+<tr><td><a href=\"svn://svn.myhost.mytld/hello/there/trunk/mydir/\">Read-Only</a></td></tr>
+<tr><td><a href=\"svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/\">Write</a></td></tr>
+</table>
+<ul>
+<li><a href=\"../\">..</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/">Write</a>]</li>
+<li><a href=\"hello.pm\">hello.pm</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/mydir/hello.pm">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/hello.pm">Write</a>]</li>
+<li><a href=\"mydir/\">mydir/</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/mydir/mydir/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/mydir/">Write</a>]</li>
+</ul>
+</body></html>
+EOF
+    , "Checking for valid output of a dir listing");        
 }
 1;
 

@@ -75,7 +75,16 @@ sub get_url_translations
 {
     my $self = shift;
 
+    my (%args) = (@_);
+
     my $cgi = $self->cgi();
+
+    my $is_list_item = $args{'is_list_item'};
+
+    if ($is_list_item && $cgi->param('trans_no_list'))
+    {
+        return [];
+    }
 
     return [
         ($cgi->param('trans_hide_all') ?
@@ -181,21 +190,32 @@ sub process_dir
     my $self = shift;
     my ($dir_contents, $fetched_rev) = 
         $self->svn_ra()->get_dir($self->path(), $self->rev_num());
+    my $escaped_path = CGI::escapeHTML($self->path());
     my $title = "Revision ". $self->rev_num() . ": /" . 
-        CGI::escapeHTML($self->path());
+        $escaped_path;
     print $self->cgi()->header();
     print "<html><head><title>$title</title></head>\n";
     print "<body>\n";
     print "<h2>$title</h2>\n";
-    my $url_translations = $self->get_url_translations();
-    if (@$url_translations)
+    my $top_url_translations =
+        $self->get_url_translations('is_list_item' => 0);
+    my @escaped_item_url_translations =
+        (map { 
+            +{ 
+                'url' => CGI::escapeHTML($_->{'url'}), 
+                'label' => CGI::escapeHTML($_->{'label'}),
+            }
+            }
+            @{$self->get_url_translations('is_list_item' => 1)}
+        );
+    if (@$top_url_translations)
     {
         print "<table border=\"1\">\n";
-        foreach my $trans (@$url_translations)
+        foreach my $trans (@$top_url_translations)
         {
             my $url = CGI::escapeHTML($trans->{'url'} . $self->path());
             my $label = CGI::escapeHTML($trans->{'label'});
-            print "<tr><td><a href=\"$url\">$label</a></td></tr>\n";
+            print "<tr><td><a href=\"$url/\">$label</a></td></tr>\n";
         }
         print "</table>\n";
     }
@@ -203,14 +223,34 @@ sub process_dir
     # If the path is the root - then we cannot have an upper directory
     if ($self->path() ne "")
     {
-        print "<li><a href=\"../" . $self->url_suffix() . "\">..</a></li>\n";
+        $escaped_path =~ /^(.*?)[^\/]+$/;
+        my $up_path = $1;
+        print "<li><a href=\"../" . $self->url_suffix() . "\">..</a>" . 
+                join("", map 
+                    { 
+                        " [<a href=\"" . $_->{'url'} . 
+                        "$up_path\">". 
+                        $_->{'label'} . 
+                        "</a>]" 
+                    }
+                @escaped_item_url_translations) . 
+                "</li>\n";
     }
     print map { my $escaped_name = CGI::escapeHTML($_); 
         if ($dir_contents->{$_}->kind() eq $SVN::Node::dir)
         {
             $escaped_name .= "/";
         }
-        "<li><a href=\"$escaped_name" . $self->url_suffix() . "\">$escaped_name</a></li>\n"
+        my $ret = "<li><a href=\"$escaped_name" . $self->url_suffix() . "\">$escaped_name</a>";
+        $ret .= join("", map 
+            { " [<a href=\"" . $_->{'url'} . 
+                "$escaped_path/$escaped_name\">". 
+                $_->{'label'} . 
+                "</a>]" 
+            } 
+            @escaped_item_url_translations);
+        $ret .= "</li>\n";
+        $ret;
         } sort { $a cmp $b } keys(%$dir_contents);
     print "</ul>\n";
     print "</body></html>\n";
