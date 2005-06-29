@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 4;
+use Test::More tests => 7;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -165,3 +165,116 @@ mytest(
         },
     ],
 );
+
+# TEST
+mytest(
+    'msg' => "Check no-hiding of trans_no_list to the main URLs",
+    'cgi' => {
+        'trans_user' => [
+            'MyUrl,https://yoohoo.yoo/hoo/',
+            'svn://soohoo.mon/mandarin/',
+        ],
+        'trans_no_list' => 1,
+    },
+    'is_list_item' => 0,
+    'url_translations' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },
+    ],
+    'results' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },    
+        {
+            'label' => "MyUrl",
+            'url' => "https://yoohoo.yoo/hoo/",
+        },
+        {
+            'label' => "UserDef2",
+            'url' => 'svn://soohoo.mon/mandarin/',
+        },
+    ],
+);
+
+# TEST
+mytest(
+    'msg' => "Check hiding of is_list_item",
+    'cgi' => {
+        'trans_user' => [
+            'MyUrl,https://yoohoo.yoo/hoo/',
+            'svn://soohoo.mon/mandarin/',
+        ],
+        'trans_no_list' => 1,
+    },
+    'is_list_item' => 1,
+    'url_translations' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },
+    ],
+    'results' =>
+    [
+    ],
+);
+
+# TEST
+mytest(
+    'msg' => "Check that a list item gets all URLs when CGI::trans_no_list is not specified",
+    'cgi' => {
+        'trans_user' => [
+            'MyUrl,https://yoohoo.yoo/hoo/',
+            'svn://soohoo.mon/mandarin/',
+        ],
+    },
+    'is_list_item' => 1,
+    'url_translations' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },
+    ],
+    'results' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },    
+        {
+            'label' => "MyUrl",
+            'url' => "https://yoohoo.yoo/hoo/",
+        },
+        {
+            'label' => "UserDef2",
+            'url' => 'svn://soohoo.mon/mandarin/',
+        },
+    ],
+);
+
