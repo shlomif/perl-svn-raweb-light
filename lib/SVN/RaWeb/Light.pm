@@ -50,6 +50,25 @@ sub initialize
     return $self;
 }
 
+sub get_user_url_translations
+{
+    my $self = shift;
+
+    my @transes = $self->cgi()->param('trans_user');
+
+    my @ret;
+    for my $i (0 .. $#transes)
+    {
+        my $elem = $transes[$i];
+        push @ret, 
+            (($elem =~ /^([^:,]*),(.*)$/) ? 
+                { 'label' => $1, 'url' => $2, } :
+                { 'label' => ("UserDef" . ($i+1)), 'url' => $elem, }
+            );
+    }
+    return \@ret;
+}
+
 # TODO :
 # Create a way for the user to specify one extra url translation of his own.
 sub get_url_translations
@@ -59,9 +78,11 @@ sub get_url_translations
     my $cgi = $self->cgi();
 
     return [
-        $cgi->param('trans_hide_all') ?
+        ($cgi->param('trans_hide_all') ?
             () :
             (@{$self->{'url_translations'}})
+        ),
+        @{$self->get_user_url_translations()},
     ];
 }
 

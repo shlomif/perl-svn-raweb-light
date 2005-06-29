@@ -31,12 +31,37 @@ sub initialize
     $self->{'out'} = "";
 }
 
+sub to_array
+{
+    my $v = shift;
+    if (!defined($v))
+    {
+        return ();
+    }
+    return ((ref($v) eq "ARRAY") ? (@$v) : ($v));
+}
+
+sub first_elem
+{
+    my $v = shift;
+    return ((ref($v) eq "ARRAY") ? $v->[0] : $v);
+}
+
 sub param
 {
     my $self = shift;
     my $param_id = shift;
 
-    return $self->{'params'}->{$param_id};
+    my $ret = $self->{'params'}->{$param_id};
+
+    if (wantarray())
+    {
+        return to_array($ret)
+    }
+    else
+    {
+        return first_elem($ret);
+    }
 }
 
 sub path_info

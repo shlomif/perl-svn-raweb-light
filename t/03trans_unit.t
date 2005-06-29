@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -73,7 +73,7 @@ mytest(
 
 # TEST
 mytest(
-    'msg' => "Basic Test - With trans_hide_all CGI",
+    'msg' => "With trans_hide_all CGI",
     'cgi' => { 'trans_hide_all' => 1, },
     'is_list_item' => 0,
     'url_translations' =>
@@ -89,5 +89,38 @@ mytest(
     ],
     'results' =>
     [
+    ],
+);
+
+# TEST
+mytest(
+    'msg' => "With trans_hide_all CGI and some user-specified translations",
+    'cgi' => { 'trans_hide_all' => 1, 
+        'trans_user' => [
+            'MyUrl,https://yoohoo.yoo/hoo/',
+            'svn://soohoo.mon/mandarin/',
+        ],},
+    'is_list_item' => 0,
+    'url_translations' =>
+    [
+        {
+            'label' => "Read-Only",
+            'url' => "svn://svn.myhost.mytld/hello/there/",
+        },
+        {
+            'label' => "Write",
+            'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+        },
+    ],
+    'results' =>
+    [
+        {
+            'label' => "MyUrl",
+            'url' => "https://yoohoo.yoo/hoo/",
+        },
+        {
+            'label' => "UserDef2",
+            'url' => 'svn://soohoo.mon/mandarin/',
+        },
     ],
 );

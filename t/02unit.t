@@ -179,7 +179,7 @@ use SVN::RaWeb::Light;
     );
 
     # TEST
-    ok((!$svn_ra_web->should_be_dir()), "Checking shoudl_be_dir()");
+    ok((!$svn_ra_web->should_be_dir()), "Checking should_be_dir()");
 }
 
 {
