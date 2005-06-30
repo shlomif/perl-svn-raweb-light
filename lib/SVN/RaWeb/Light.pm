@@ -222,9 +222,15 @@ sub process_dir
         print "<table border=\"1\">\n";
         foreach my $trans (@$top_url_translations)
         {
-            my $url = CGI::escapeHTML($trans->{'url'} . $self->path());
-            my $label = CGI::escapeHTML($trans->{'label'});
-            print "<tr><td><a href=\"$url/\">$label</a></td></tr>\n";
+            my $url = $self->path();
+            if ($url ne "")
+            {
+                $url .= "/";
+            }
+            
+            my $escaped_url = CGI::escapeHTML($trans->{'url'} . $url);
+            my $escaped_label = CGI::escapeHTML($trans->{'label'});
+            print "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
         }
         print "</table>\n";
     }
@@ -250,10 +256,15 @@ sub process_dir
         {
             $escaped_name .= "/";
         }
+        my $escaped_path_prefix = $escaped_path;
+        if ($escaped_path_prefix ne "")
+        {
+            $escaped_path_prefix .= "/";
+        }
         my $ret = "<li><a href=\"$escaped_name" . $self->url_suffix() . "\">$escaped_name</a>";
         $ret .= join("", map 
             { " [<a href=\"" . $_->{'url'} . 
-                "$escaped_path/$escaped_name\">". 
+                "$escaped_path_prefix$escaped_name\">". 
                 $_->{'label'} . 
                 "</a>]" 
             } 

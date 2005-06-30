@@ -1,5 +1,5 @@
-* Test Suite - 01output.t:
-# TODO: check with url_translations.
+* Make sure that the URL translations for the root don't generate a double
+slash.
 
 * URL Translations:
     - Document in the POD.
