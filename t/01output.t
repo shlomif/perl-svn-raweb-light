@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 27;
+use Test::More tests => 29;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -868,9 +868,111 @@ EOF
     , "Checking for trans_no_list=1");
 }
 
+# Check for url_translations of a regular (non-root) directory.
+# With trans_hide_all=1 and trans_no_list.
+{
+    local @CGI::new_params = 
+    (
+        'path_info' => "/trunk/mydir/",
+        'params' =>
+        {
+            'trans_hide_all' => 1,
+            'trans_user' => "MyUrl,http://y.y/",
+            'trans_no_list' => 1,
+        },
+        'query_string' => "trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1",
+    );
 
-1;
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            return 10900;
+        },
+        'check_path' => sub {
+            my ($self, $path, $rev_num) = @_;
+            if ($path eq "trunk/mydir")
+            {
+                return $SVN::Node::dir;
+            }
+            die "Wrong path queried - $path.";
+        },
+        'get_dir' => sub {
+            my $self = shift;
+            my $path = shift;
+            my $rev_num = shift;
 
+            if ($path ne "trunk/mydir")
+            {
+                die "Wrong Path - $path";
+            }
+
+            if ($rev_num != 10900)
+            {
+                die "Wrong rev_num - $rev_num";
+            }
+    
+            return 
+            (
+                {
+                    'hello.pm' => 
+                    { 
+                        'kind' => $SVN::Node::file,
+                    },
+                    'mydir' =>
+                    {
+                        'kind' => $SVN::Node::dir,
+                    },
+                },
+                $rev_num
+            );
+        },
+    );
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+            'url_translations' =>
+            [
+                {
+                    'label' => "Read-Only",
+                    'url' => "svn://svn.myhost.mytld/hello/there/",
+                },
+                {
+                    'label' => "Write",
+                    'url' => "svn+ssh://svnwrite.myhost.mytld/root/myroot/",
+                },
+            ],
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    # TEST
+    ok(!$@, "Testing that no exception was thrown.");
+    
+    my $results = get_out_buffer();
+
+    # TEST
+    is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
+Content-Type: text/html
+
+<html><head><title>Revision 10900: /trunk/mydir</title></head>
+<body>
+<h2>Revision 10900: /trunk/mydir</h2>
+<table border="1">
+<tr><td><a href="http://y.y/trunk/mydir/">MyUrl</a></td></tr>
+</table>
+<ul>
+<li><a href=\"../?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">..</a></li>
+<li><a href=\"hello.pm?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">hello.pm</a></li>
+<li><a href=\"mydir/?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">mydir/</a></li>
+</ul>
+</body></html>
+EOF
+    , "Checking for trans_no_list=1");
+}
 
 1;
 
