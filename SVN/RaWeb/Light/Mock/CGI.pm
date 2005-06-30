@@ -27,6 +27,7 @@ sub initialize
     $self->{'params'} = $args{'params'};
     $self->{'path_info'} = $args{'path_info'};
     $self->{'script_name'} = $args{'script_name'};
+    $self->{'query_string'} = ($args{'query_string'} || "");
 
     $self->{'out'} = "";
 }
@@ -62,6 +63,12 @@ sub param
     {
         return first_elem($ret);
     }
+}
+
+sub query_string
+{
+    my $self = shift;
+    return $self->{'query_string'};
 }
 
 sub path_info
