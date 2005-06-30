@@ -109,12 +109,21 @@ sub calc_rev_num
     if (defined($rev_param))
     {
         $rev_num = abs(int($rev_param));
-        $url_suffix = "?rev=$rev_num";
     }
     else
     {
         $rev_num = $self->svn_ra()->get_latest_revnum();
-        $url_suffix = "";
+    }
+    {
+        my $query_string = $self->cgi->query_string();
+        if ($query_string eq "")
+        {
+            $url_suffix = "";
+        }
+        else
+        {
+            $url_suffix = "?" . $query_string;
+        }
     }
     
     $self->rev_num($rev_num);
