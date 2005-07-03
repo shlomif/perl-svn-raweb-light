@@ -9,6 +9,9 @@ slash.
     - Implement URL translations after the directory listing.
     - Implement the user-defined URL translation.
 
+* Fix the escaping of the & in the CGI parameter list inside the <a href=""
+tag.
+
 * Add a Help Screen 
 
 * Add a Control Console.

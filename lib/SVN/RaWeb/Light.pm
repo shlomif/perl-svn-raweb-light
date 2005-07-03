@@ -222,26 +222,45 @@ sub get_esc_item_url_translations
     return $self->{'escaped_item_url_translations'};
 }
 
+sub render_list_item
+{
+    my ($self, $args) = (@_);
+
+    return
+        qq(<li><a href="$args->{link}) .
+        qq(@{[$self->url_suffix()]}">$args->{label}</a>) .
+        join("",
+        map 
+        {
+            " [<a href=\"$_->{url}$args->{path_in_repos}\">$_->{label}</a>]"
+        }
+        @{$self->get_esc_item_url_translations()}
+        ) .
+        "</li>\n";    
+}
+
+sub get_esc_up_path
+{
+    my $self = shift;
+
+    $self->path() =~ /^(.*?)[^\/]+$/;
+
+    return CGI::escapeHTML($1);    
+}
+
 # The purpose of this function ios to get the list item of the ".." directory
 # that goes one level up in the repository.
 sub render_up_list_item
 {
     my $self = shift;
 
-    $self->path() =~ /^(.*?)[^\/]+$/;
-
-    my $up_path = CGI::escapeHTML($1);
-    
-    return "<li><a href=\"../" . $self->url_suffix() . "\">..</a>" . 
-            join("", map 
-                { 
-                    " [<a href=\"" . $_->{'url'} . 
-                    "$up_path\">". 
-                    $_->{'label'} . 
-                    "</a>]" 
-                }
-            @{$self->get_esc_item_url_translations()}) . 
-            "</li>\n";    
+    return $self->render_list_item(
+        {
+            'link' => "../",
+            'label' => "..",
+            'path_in_repos' => $self->get_esc_up_path(),
+        }
+    );
 }
 
 sub render_regular_list_item
@@ -260,16 +279,13 @@ sub render_regular_list_item
     {
         $escaped_path_prefix .= "/";
     }
-    my $ret = "<li><a href=\"$escaped_name" . $self->url_suffix() . "\">$escaped_name</a>";
-    $ret .= join("", map 
-        { " [<a href=\"" . $_->{'url'} . 
-            "$escaped_path_prefix$escaped_name\">". 
-            $_->{'label'} . 
-            "</a>]" 
-        } 
-        @{$self->get_esc_item_url_translations});
-    $ret .= "</li>\n";
-    return $ret;    
+
+    return $self->render_list_item(
+        {
+            (map { $_ => $escaped_name } qw(link label)),
+            'path_in_repos' => $escaped_path_prefix.$escaped_name,
+        }
+    );
 }
 
 sub process_dir
