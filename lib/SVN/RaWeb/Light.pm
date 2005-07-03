@@ -7,7 +7,7 @@ use vars qw($VERSION);
 
 $VERSION = '0.5.6_00';
 
-use CGI;
+use CGI ();
 use IO::Scalar;
 
 require SVN::Core;
@@ -265,6 +265,20 @@ sub render_up_list_item
     );
 }
 
+# This method gets the escaped path along with a potential trailing slash
+# (if it isn't empty)
+sub get_normalized_path
+{
+    my $self = shift;
+
+    my $url = $self->path();
+    if ($url ne "")
+    {
+        $url .= "/";
+    }
+    return $url;
+}
+
 sub render_regular_list_item
 {
     my ($self, $entry, $dir_contents) = @_;
@@ -275,16 +289,11 @@ sub render_regular_list_item
         $escaped_name .= "/";
     }
 
-    my $escaped_path_prefix = $self->get_escaped_path();
-    if ($escaped_path_prefix ne "")
-    {
-        $escaped_path_prefix .= "/";
-    }
-
     return $self->render_list_item(
         {
             (map { $_ => $escaped_name } qw(link label)),
-            'path_in_repos' => $escaped_path_prefix.$escaped_name,
+            'path_in_repos' => 
+                (CGI::escapeHTML($self->get_normalized_path()).$escaped_name),
         }
     );
 }
@@ -301,12 +310,7 @@ sub render_top_url_translations_text
         $ret .= "<table border=\"1\">\n";
         foreach my $trans (@$top_url_translations)
         {
-            my $url = $self->path();
-            if ($url ne "")
-            {
-                $url .= "/";
-            }
-            
+            my $url = $self->get_normalized_path();
             my $escaped_url = CGI::escapeHTML($trans->{'url'} . $url);
             my $escaped_label = CGI::escapeHTML($trans->{'label'});
             $ret .= "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
