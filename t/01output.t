@@ -859,9 +859,9 @@ Content-Type: text/html
 <tr><td><a href="http://y.y/trunk/mydir/">MyUrl</a></td></tr>
 </table>
 <ul>
-<li><a href=\"../?trans_hide_all=1&trans_user=MyUrl,http://y.y/\">..</a> [<a href="http://y.y/trunk/">MyUrl</a>]</li>
-<li><a href=\"hello.pm?trans_hide_all=1&trans_user=MyUrl,http://y.y/\">hello.pm</a> [<a href="http://y.y/trunk/mydir/hello.pm">MyUrl</a>]</li>
-<li><a href=\"mydir/?trans_hide_all=1&trans_user=MyUrl,http://y.y/\">mydir/</a> [<a href="http://y.y/trunk/mydir/mydir/">MyUrl</a>]</li>
+<li><a href=\"../?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/\">..</a> [<a href="http://y.y/trunk/">MyUrl</a>]</li>
+<li><a href=\"hello.pm?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/\">hello.pm</a> [<a href="http://y.y/trunk/mydir/hello.pm">MyUrl</a>]</li>
+<li><a href=\"mydir/?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/\">mydir/</a> [<a href="http://y.y/trunk/mydir/mydir/">MyUrl</a>]</li>
 </ul>
 </body></html>
 EOF
@@ -965,9 +965,9 @@ Content-Type: text/html
 <tr><td><a href="http://y.y/trunk/mydir/">MyUrl</a></td></tr>
 </table>
 <ul>
-<li><a href=\"../?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">..</a></li>
-<li><a href=\"hello.pm?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">hello.pm</a></li>
-<li><a href=\"mydir/?trans_hide_all=1&trans_user=MyUrl,http://y.y/&trans_no_list=1\">mydir/</a></li>
+<li><a href=\"../?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/&amp;trans_no_list=1\">..</a></li>
+<li><a href=\"hello.pm?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/&amp;trans_no_list=1\">hello.pm</a></li>
+<li><a href=\"mydir/?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/&amp;trans_no_list=1\">mydir/</a></li>
 </ul>
 </body></html>
 EOF

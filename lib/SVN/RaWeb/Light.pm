@@ -15,7 +15,8 @@ require SVN::Ra;
 
 use base 'Class::Accessor';
 
-__PACKAGE__->mk_accessors(qw(cgi path rev_num should_be_dir svn_ra url_suffix));
+__PACKAGE__->mk_accessors(qw(cgi esc_url_suffix path rev_num), 
+    qw(should_be_dir svn_ra url_suffix));
 
 # Preloaded methods go here.
 
@@ -128,6 +129,7 @@ sub calc_rev_num
     
     $self->rev_num($rev_num);
     $self->url_suffix($url_suffix);
+    $self->esc_url_suffix(CGI::escapeHTML($self->url_suffix()));
 }
 
 sub calc_path
@@ -228,7 +230,7 @@ sub render_list_item
 
     return
         qq(<li><a href="$args->{link}) .
-        qq(@{[$self->url_suffix()]}">$args->{label}</a>) .
+        qq(@{[$self->esc_url_suffix()]}">$args->{label}</a>) .
         join("",
         map 
         {
@@ -287,6 +289,33 @@ sub render_regular_list_item
     );
 }
 
+sub render_top_url_translations_text
+{
+    my $self = shift;
+    
+    my $top_url_translations =
+        $self->get_url_translations('is_list_item' => 0);
+    my $ret = "";
+    if (@$top_url_translations)
+    {
+        $ret .= "<table border=\"1\">\n";
+        foreach my $trans (@$top_url_translations)
+        {
+            my $url = $self->path();
+            if ($url ne "")
+            {
+                $url .= "/";
+            }
+            
+            my $escaped_url = CGI::escapeHTML($trans->{'url'} . $url);
+            my $escaped_label = CGI::escapeHTML($trans->{'label'});
+            $ret .= "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
+        }
+        $ret .= "</table>\n";
+    }
+    return $ret;
+}
+
 sub process_dir
 {
     my $self = shift;
@@ -298,25 +327,7 @@ sub process_dir
     print "<html><head><title>$title</title></head>\n";
     print "<body>\n";
     print "<h2>$title</h2>\n";
-    my $top_url_translations =
-        $self->get_url_translations('is_list_item' => 0);
-    if (@$top_url_translations)
-    {
-        print "<table border=\"1\">\n";
-        foreach my $trans (@$top_url_translations)
-        {
-            my $url = $self->path();
-            if ($url ne "")
-            {
-                $url .= "/";
-            }
-            
-            my $escaped_url = CGI::escapeHTML($trans->{'url'} . $url);
-            my $escaped_label = CGI::escapeHTML($trans->{'label'});
-            print "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
-        }
-        print "</table>\n";
-    }
+    print $self->render_top_url_translations_text();
     print "<ul>\n";
     # If the path is the root - then we cannot have an upper directory
     if ($self->path() ne "")
