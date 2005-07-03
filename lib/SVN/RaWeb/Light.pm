@@ -267,14 +267,13 @@ sub render_regular_list_item
 {
     my ($self, $entry, $dir_contents) = @_;
 
-    my $escaped_path = $self->get_escaped_path();
-    
     my $escaped_name = CGI::escapeHTML($entry); 
     if ($dir_contents->{$entry}->kind() eq $SVN::Node::dir)
     {
         $escaped_name .= "/";
     }
-    my $escaped_path_prefix = $escaped_path;
+
+    my $escaped_path_prefix = $self->get_escaped_path();
     if ($escaped_path_prefix ne "")
     {
         $escaped_path_prefix .= "/";
