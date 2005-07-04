@@ -15,7 +15,7 @@ require SVN::Ra;
 
 use base 'Class::Accessor';
 
-__PACKAGE__->mk_accessors(qw(cgi esc_url_suffix path rev_num), 
+__PACKAGE__->mk_accessors(qw(cgi dir_contents esc_url_suffix path rev_num), 
     qw(should_be_dir svn_ra url_suffix));
 
 # Preloaded methods go here.
@@ -270,7 +270,7 @@ sub real_render_up_list_item
 sub render_up_list_item
 {
     my $self = shift;
-
+    # If the path is the root - then we cannot have an upper directory
     if ($self->path() eq "")
     {
         return ();
@@ -297,10 +297,10 @@ sub get_normalized_path
 
 sub render_regular_list_item
 {
-    my ($self, $entry, $dir_contents) = @_;
+    my ($self, $entry) = @_;
 
     my $escaped_name = escape($entry); 
-    if ($dir_contents->{$entry}->kind() eq $SVN::Node::dir)
+    if ($self->dir_contents->{$entry}->kind() eq $SVN::Node::dir)
     {
         $escaped_name .= "/";
     }
@@ -351,20 +351,34 @@ sub render_dir_header
     return $ret;
 }
 
+sub print_items_list
+{
+    my ($self) = @_;
+    print "<ul>\n";
+    
+    print $self->render_up_list_item();
+    print map {
+        $self->render_regular_list_item($_)
+        } sort { $a cmp $b } keys(%{$self->dir_contents()});
+    print "</ul>\n";
+}
+
+sub get_dir
+{
+    my $self = shift;
+
+    my ($dir_contents, $fetched_rev) =
+        $self->svn_ra()->get_dir($self->path(), $self->rev_num());
+    $self->dir_contents($dir_contents);
+}
+
 sub process_dir
 {
     my $self = shift;
-    my ($dir_contents, $fetched_rev) = 
-        $self->svn_ra()->get_dir($self->path(), $self->rev_num());
+    $self->get_dir();
     print $self->render_dir_header();
     print $self->render_top_url_translations_text();
-    print "<ul>\n";
-    # If the path is the root - then we cannot have an upper directory
-    print $self->render_up_list_item();
-    print map { 
-        $self->render_regular_list_item($_, $dir_contents)
-        } sort { $a cmp $b } keys(%$dir_contents);
-    print "</ul>\n";
+    $self->print_items_list();
     print "</body></html>\n";
 }
 
