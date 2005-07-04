@@ -351,15 +351,40 @@ sub render_dir_header
     return $ret;
 }
 
+sub get_items_list_items_order
+{
+    my $self = shift;
+    return [ sort { $a cmp $b } keys(%{$self->dir_contents()}) ];
+}
+
+sub get_items_list_regular_items
+{
+    my $self = shift;
+    return 
+        [map 
+        {
+            $self->render_regular_list_item($_)
+        } 
+        (@{$self->get_items_list_items_order()})
+        ];
+}
+
+sub get_items_list_items
+{
+    my $self = shift;
+    return 
+    [
+        $self->render_up_list_item(),
+        @{$self->get_items_list_regular_items()},
+    ];
+}
+
 sub print_items_list
 {
     my ($self) = @_;
     print "<ul>\n";
     
-    print $self->render_up_list_item();
-    print map {
-        $self->render_regular_list_item($_)
-        } sort { $a cmp $b } keys(%{$self->dir_contents()});
+    print @{$self->get_items_list_items()};
     print "</ul>\n";
 }
 
