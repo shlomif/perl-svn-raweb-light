@@ -20,6 +20,9 @@ __PACKAGE__->mk_accessors(qw(cgi esc_url_suffix path rev_num),
 
 # Preloaded methods go here.
 
+# We alias escape() to CGI::escapeHTML().
+*escape = \&CGI::escapeHTML;
+
 sub new
 {
     my $self = {};
@@ -129,7 +132,7 @@ sub calc_rev_num
     
     $self->rev_num($rev_num);
     $self->url_suffix($url_suffix);
-    $self->esc_url_suffix(CGI::escapeHTML($self->url_suffix()));
+    $self->esc_url_suffix(escape($self->url_suffix()));
 }
 
 sub calc_path
@@ -167,7 +170,7 @@ sub get_correct_node_kind
 sub get_escaped_path
 {
     my $self = shift;
-    return CGI::escapeHTML($self->path());
+    return escape($self->path());
 }
 
 sub check_node_kind
@@ -213,8 +216,8 @@ sub get_esc_item_url_translations
         (
             map { 
             +{ 
-                'url' => CGI::escapeHTML($_->{'url'}), 
-                'label' => CGI::escapeHTML($_->{'label'}),
+                'url' => escape($_->{'url'}), 
+                'label' => escape($_->{'label'}),
             }
             }
             @{$self->get_url_translations('is_list_item' => 1)}
@@ -247,7 +250,7 @@ sub get_esc_up_path
 
     $self->path() =~ /^(.*?)[^\/]+$/;
 
-    return CGI::escapeHTML($1);    
+    return escape($1);    
 }
 
 # The purpose of this function ios to get the list item of the ".." directory
@@ -283,7 +286,7 @@ sub render_regular_list_item
 {
     my ($self, $entry, $dir_contents) = @_;
 
-    my $escaped_name = CGI::escapeHTML($entry); 
+    my $escaped_name = escape($entry); 
     if ($dir_contents->{$entry}->kind() eq $SVN::Node::dir)
     {
         $escaped_name .= "/";
@@ -293,7 +296,7 @@ sub render_regular_list_item
         {
             (map { $_ => $escaped_name } qw(link label)),
             'path_in_repos' => 
-                (CGI::escapeHTML($self->get_normalized_path()).$escaped_name),
+                (escape($self->get_normalized_path()).$escaped_name),
         }
     );
 }
@@ -311,8 +314,8 @@ sub render_top_url_translations_text
         foreach my $trans (@$top_url_translations)
         {
             my $url = $self->get_normalized_path();
-            my $escaped_url = CGI::escapeHTML($trans->{'url'} . $url);
-            my $escaped_label = CGI::escapeHTML($trans->{'label'});
+            my $escaped_url = escape($trans->{'url'} . $url);
+            my $escaped_label = escape($trans->{'label'});
             $ret .= "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
         }
         $ret .= "</table>\n";
