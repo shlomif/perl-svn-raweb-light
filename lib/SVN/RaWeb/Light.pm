@@ -253,12 +253,9 @@ sub get_esc_up_path
     return escape($1);    
 }
 
-# The purpose of this function ios to get the list item of the ".." directory
-# that goes one level up in the repository.
-sub render_up_list_item
+sub real_render_up_list_item
 {
     my $self = shift;
-
     return $self->render_list_item(
         {
             'link' => "../",
@@ -266,6 +263,22 @@ sub render_up_list_item
             'path_in_repos' => $self->get_esc_up_path(),
         }
     );
+}
+
+# The purpose of this function ios to get the list item of the ".." directory
+# that goes one level up in the repository.
+sub render_up_list_item
+{
+    my $self = shift;
+
+    if ($self->path() eq "")
+    {
+        return ();
+    }
+    else
+    {
+        return $self->real_render_up_list_item();
+    }
 }
 
 # This method gets the escaped path along with a potential trailing slash
@@ -323,24 +336,31 @@ sub render_top_url_translations_text
     return $ret;
 }
 
+sub render_dir_header
+{
+    my $self = shift;
+
+    my $title = "Revision ". $self->rev_num() . ": /" . 
+        $self->get_escaped_path();
+    my $ret = "";
+    $ret .= $self->cgi()->header();
+    $ret .= "<html><head><title>$title</title></head>\n";
+    $ret .= "<body>\n";
+    $ret .="<h2>$title</h2>\n";
+
+    return $ret;
+}
+
 sub process_dir
 {
     my $self = shift;
     my ($dir_contents, $fetched_rev) = 
         $self->svn_ra()->get_dir($self->path(), $self->rev_num());
-    my $title = "Revision ". $self->rev_num() . ": /" . 
-        $self->get_escaped_path();
-    print $self->cgi()->header();
-    print "<html><head><title>$title</title></head>\n";
-    print "<body>\n";
-    print "<h2>$title</h2>\n";
+    print $self->render_dir_header();
     print $self->render_top_url_translations_text();
     print "<ul>\n";
     # If the path is the root - then we cannot have an upper directory
-    if ($self->path() ne "")
-    {
-        print $self->render_up_list_item();
-    }
+    print $self->render_up_list_item();
     print map { 
         $self->render_regular_list_item($_, $dir_contents)
         } sort { $a cmp $b } keys(%$dir_contents);
