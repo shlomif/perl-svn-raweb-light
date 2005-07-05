@@ -1,6 +1,3 @@
-* Make sure that the URL translations for the root don't generate a double
-slash.
-
 * URL Translations:
     - Document in the POD.
     - Document in Changes.
@@ -8,9 +5,6 @@ slash.
     - Implement the user-specified URL translation.
     - Implement URL translations after the directory listing.
     - Implement the user-defined URL translation.
-
-* Fix the escaping of the & in the CGI parameter list inside the <a href=""
-tag.
 
 * Add a Help Screen 
 
