@@ -1,6 +1,8 @@
 AUTHORS
 Changes
 COPYING
+docs/Help.html
+Help.html
 Makefile.PL
 MANIFEST
 README
@@ -10,6 +12,7 @@ t/02unit.t
 t/03trans_unit.t
 t/04exceptions.t
 lib/SVN/RaWeb/Light.pm
+lib/SVN/RaWeb/Light/Help.pm
 examples/berlios.pl
 META.yml                                 Module meta-data (added by MakeMaker)
 SVN/RaWeb/Light/Mock/CGI.pm

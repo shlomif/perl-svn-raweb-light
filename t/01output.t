@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 33;
+use Test::More tests => 36;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -1085,6 +1085,55 @@ EOF
     , "Check for url_translations of a regular (non-root) directory.");        
 }
 
+
+# Check for url_translations of a root directory
+{
+    local @CGI::new_params = 
+    (
+        'path_info' => "/",
+        'params' =>
+        {
+            'mode' => "help",
+        },
+        'query_string' => "mode=help",
+    );
+
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            die "Called get_latest_revnum and shouldn't";
+        },
+        'check_path' => sub {
+            die "Called check_path and shouldn't";
+        },
+        'get_dir' => sub {
+            die "Called get_dir and shouldn't";
+        },
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    # TEST
+    ok(!$@, "Testing that no exception was thrown.");
+    
+    my $results = get_out_buffer();
+
+    # TEST
+    like($results, qr{<title>SVN::RaWeb::Light Help Screen</title>},
+        "Check for a valid help screen - title");
+    # TEST
+    like($results, qr{<h1>SVN::RaWeb::Light Help Screen</h1>},
+        "Check for a valid help screen - h1");
+}
 
 1;
 

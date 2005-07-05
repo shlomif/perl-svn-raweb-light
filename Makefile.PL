@@ -1,4 +1,28 @@
 use ExtUtils::MakeMaker;
+
+open O, ">", "lib/SVN/RaWeb/Light/Help.pm";
+print O <<'EOF';
+package SVN::RaWeb::Light::Help;
+
+sub print_data
+{
+    local $/;
+    print <DATA>;
+}
+
+1;
+EOF
+
+print O "__DATA__\n";
+
+{
+    local $/;
+    open I, "<", "docs/Help.html";
+    print O <I>;
+    close(I);
+}
+close(O);
+
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(

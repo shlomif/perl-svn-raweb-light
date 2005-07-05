@@ -15,6 +15,8 @@ require SVN::Ra;
 
 use base 'Class::Accessor';
 
+use SVN::RaWeb::Light::Help;
+
 __PACKAGE__->mk_accessors(qw(cgi dir_contents esc_url_suffix path rev_num), 
     qw(should_be_dir svn_ra url_suffix));
 
@@ -97,6 +99,15 @@ sub get_url_translations
         ),
         @{$self->get_user_url_translations()},
     ];
+}
+
+sub get_mode
+{
+    my $self = shift;
+
+    my $mode = $self->cgi()->param("mode");
+
+    return (defined($mode) ? $mode : "view");
 }
 
 # This function must be called before rev_num() and url_suffix() are valid.
@@ -451,10 +462,21 @@ sub process_file
     print $buffer;
 }
 
+sub process_help
+{
+    my $self = shift;
+    SVN::RaWeb::Light::Help::print_data();
+}
+
 sub real_run
 {
     my $self = shift;
     my $cgi = $self->cgi();
+
+    if ($self->get_mode() eq "help")
+    {
+        return $self->process_help();
+    }
     $self->calc_rev_num();
     $self->calc_path();
 
