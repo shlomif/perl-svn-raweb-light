@@ -437,7 +437,8 @@ sub real_run
     {
         return $self->process_dir();
     }
-    elsif ($node_kind eq $SVN::Node::file)
+    # This means $node_kind eq $SVN::Node::file
+    else
     {
         return $self->process_file();
     }
