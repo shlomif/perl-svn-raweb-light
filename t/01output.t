@@ -14,6 +14,10 @@ use SVN::RaWeb::Light::Mock::Stdout;
 
 use SVN::RaWeb::Light;
 
+use SVN::RaWeb::Light::Test::LimitOutput;
+
+package main;
+
 {
     @CGI::new_params = ('path_info' => "/trunk/hello/");
 
@@ -217,6 +221,8 @@ use SVN::RaWeb::Light;
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
+
+    
     
     my $results = get_out_buffer();
 
@@ -380,7 +386,7 @@ use SVN::RaWeb::Light;
     reset_out_buffer();
 
     my $svn_ra_web =
-        SVN::RaWeb::Light->new(
+        SVN::RaWeb::Light::OutputListOnly->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
         );
 
@@ -389,17 +395,13 @@ use SVN::RaWeb::Light;
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
-        "<html><head><title>Revision 150: /trunk/subversion</title></head>\n" .
-        "<body>\n" .
-        "<h2>Revision 150: /trunk/subversion</h2>\n" .
+    is($results, (
         "<ul>\n" .
         "<li><a href=\"../?rev=150\">..</a></li>\n" .
         "<li><a href=\"parser?rev=150\">parser</a></li>\n" .
         "<li><a href=\"the-directory/?rev=150\">the-directory/</a></li>\n" .
         "<li><a href=\"yowza.txt?rev=150\">yowza.txt</a></li>\n" .
-        "</ul>\n".
-        "</body></html>\n"),
+        "</ul>\n"),
         "Checking for valid output of a dir listing in root");
 }
 
