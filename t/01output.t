@@ -159,8 +159,6 @@ package main;
 }
 
 # Test the directory output for a regular (non-root) directory.
-# TODO: check with url_translations.
-# TODO: check for file output with a defualt mime type of text/plain.
 {
     local @CGI::new_params = ('path_info' => "/trunk/mydir/");
 
@@ -615,7 +613,7 @@ package main;
     reset_out_buffer();
 
     my $svn_ra_web =
-        SVN::RaWeb::Light->new(
+        SVN::RaWeb::Light::OutputTransAndList->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
             [
@@ -641,11 +639,6 @@ package main;
 
     # TEST
     is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
-Content-Type: text/html
-
-<html><head><title>Revision 10900: /trunk/mydir</title></head>
-<body>
-<h2>Revision 10900: /trunk/mydir</h2>
 <table border=\"1\">
 <tr><td><a href=\"svn://svn.myhost.mytld/hello/there/trunk/mydir/\">Read-Only</a></td></tr>
 <tr><td><a href=\"svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/\">Write</a></td></tr>
@@ -655,7 +648,6 @@ Content-Type: text/html
 <li><a href=\"hello.pm\">hello.pm</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/mydir/hello.pm">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/hello.pm">Write</a>]</li>
 <li><a href=\"mydir/\">mydir/</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/mydir/mydir/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/mydir/">Write</a>]</li>
 </ul>
-</body></html>
 EOF
     , "Check for url_translations of a regular (non-root) directory.");        
 }
@@ -720,7 +712,7 @@ EOF
     reset_out_buffer();
 
     my $svn_ra_web =
-        SVN::RaWeb::Light->new(
+        SVN::RaWeb::Light::OutputTransAndList->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
             [
@@ -746,11 +738,6 @@ EOF
 
     # TEST
     is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
-Content-Type: text/html
-
-<html><head><title>Revision 10900: /trunk/mydir</title></head>
-<body>
-<h2>Revision 10900: /trunk/mydir</h2>
 <table border=\"1\">
 <tr><td><a href=\"svn://svn.myhost.mytld/hello/there/trunk/mydir/\">Read-Only</a></td></tr>
 <tr><td><a href=\"svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/\">Write</a></td></tr>
@@ -760,7 +747,6 @@ Content-Type: text/html
 <li><a href=\"hello.pm?trans_no_list=1\">hello.pm</a></li>
 <li><a href=\"mydir/?trans_no_list=1\">mydir/</a></li>
 </ul>
-</body></html>
 EOF
     , "Checking for trans_no_list=1");
 }
