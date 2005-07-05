@@ -912,7 +912,7 @@ EOF
     reset_out_buffer();
 
     my $svn_ra_web =
-        SVN::RaWeb::Light->new(
+        SVN::RaWeb::Light::OutputTransAndList->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
             [
@@ -938,11 +938,6 @@ EOF
 
     # TEST
     is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
-Content-Type: text/html
-
-<html><head><title>Revision 10900: /trunk/mydir</title></head>
-<body>
-<h2>Revision 10900: /trunk/mydir</h2>
 <table border="1">
 <tr><td><a href="http://y.y/trunk/mydir/">MyUrl</a></td></tr>
 </table>
@@ -951,7 +946,6 @@ Content-Type: text/html
 <li><a href=\"hello.pm?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/&amp;trans_no_list=1\">hello.pm</a></li>
 <li><a href=\"mydir/?trans_hide_all=1&amp;trans_user=MyUrl,http://y.y/&amp;trans_no_list=1\">mydir/</a></li>
 </ul>
-</body></html>
 EOF
     , "Checking for trans_no_list=1");
 }
@@ -1007,7 +1001,7 @@ EOF
     reset_out_buffer();
 
     my $svn_ra_web =
-        SVN::RaWeb::Light->new(
+        SVN::RaWeb::Light::OutputTransAndList->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
             [
@@ -1033,11 +1027,6 @@ EOF
 
     # TEST
     is_deeply([split(/\n/, $results)], [(split /\n/, <<"EOF")]
-Content-Type: text/html
-
-<html><head><title>Revision 10900: /</title></head>
-<body>
-<h2>Revision 10900: /</h2>
 <table border=\"1\">
 <tr><td><a href=\"svn://svn.myhost.mytld/hello/there/\">Read-Only</a></td></tr>
 <tr><td><a href=\"svn+ssh://svnwrite.myhost.mytld/root/myroot/\">Write</a></td></tr>
@@ -1046,7 +1035,6 @@ Content-Type: text/html
 <li><a href=\"hello.pm\">hello.pm</a> [<a href="svn://svn.myhost.mytld/hello/there/hello.pm">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/hello.pm">Write</a>]</li>
 <li><a href=\"mydir/\">mydir/</a> [<a href="svn://svn.myhost.mytld/hello/there/mydir/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/mydir/">Write</a>]</li>
 </ul>
-</body></html>
 EOF
     , "Check for url_translations of a regular (non-root) directory.");        
 }
