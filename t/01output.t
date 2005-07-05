@@ -273,9 +273,12 @@ package main;
         "<li><a href=\"hello.pm\">hello.pm</a></li>\n" .
         "<li><a href=\"mydir/\">mydir/</a></li>\n" .
         "</ul>\n".
+        "<ul>\n" .
+        "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
+        "<li><a href=\"./?panel=1\">Show Control Panel</a></li>\n" .
+        "</ul>\n" .
         "</body></html>\n"),
         "Checking for valid output of a dir listing");
-        
 }
 
 # Test the directory output for the root directory
@@ -356,6 +359,10 @@ package main;
         "<li><a href=\"the-directory/\">the-directory/</a></li>\n" .
         "<li><a href=\"yowza.txt\">yowza.txt</a></li>\n" .
         "</ul>\n".
+        "<ul>\n" .
+        "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
+        "<li><a href=\"./?panel=1\">Show Control Panel</a></li>\n" .
+        "</ul>\n" .        
         "</body></html>\n"),
         "Checking for valid output of a dir listing in root");
 }

@@ -118,21 +118,41 @@ sub calc_rev_num
     {
         $rev_num = $self->svn_ra()->get_latest_revnum();
     }
+    
+    $self->rev_num($rev_num);
+    $self->url_suffix($self->get_url_suffix_with_extras());
+    $self->esc_url_suffix(escape($self->url_suffix()));
+}
+
+# Gets the URL suffix calculated with optional extra components.
+sub get_url_suffix_with_extras
+{
+    my $self = shift;
+    my $components = shift;
+
+    my $query_string = $self->cgi->query_string();
+    if ($query_string eq "")
     {
-        my $query_string = $self->cgi->query_string();
-        if ($query_string eq "")
+        if (defined($components))
         {
-            $url_suffix = "";
+            return "?" . $components;
         }
         else
         {
-            $url_suffix = "?" . $query_string;
+            return "";
+        }        
+    }
+    else
+    {
+        if (defined($components))
+        {
+            return "?" . $query_string . ";" . $components;
+        }
+        else
+        {
+            return "?" . $query_string;
         }
     }
-    
-    $self->rev_num($rev_num);
-    $self->url_suffix($url_suffix);
-    $self->esc_url_suffix(escape($self->url_suffix()));
 }
 
 sub calc_path
@@ -388,6 +408,15 @@ sub print_items_list
     print "</ul>\n";
 }
 
+sub print_control_section
+{
+    my $self = shift;
+    print "<ul>\n" .
+        "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
+        "<li><a href=\"./" . escape($self->get_url_suffix_with_extras("panel=1")) . "\">Show Control Panel</a></li>\n" .
+        "</ul>\n";
+}
+
 sub get_dir
 {
     my $self = shift;
@@ -404,6 +433,7 @@ sub process_dir
     print $self->render_dir_header();
     print $self->render_top_url_translations_text();
     $self->print_items_list();
+    $self->print_control_section();
     print "</body></html>\n";
 }
 

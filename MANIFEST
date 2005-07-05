@@ -7,10 +7,13 @@ README
 t/SVN-RaWeb-Light.t
 t/01output.t
 t/02unit.t
+t/03trans_unit.t
+t/04exceptions.t
 lib/SVN/RaWeb/Light.pm
 examples/berlios.pl
 META.yml                                 Module meta-data (added by MakeMaker)
 SVN/RaWeb/Light/Mock/CGI.pm
 SVN/RaWeb/Light/Mock/Stdout.pm
 SVN/RaWeb/Light/Mock/Svn.pm
+SVN/RaWeb/Light/Test/LimitOutput.pm
 TODO

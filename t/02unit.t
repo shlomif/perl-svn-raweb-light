@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 14;
+use Test::More tests => 18;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -234,6 +234,69 @@ use SVN::RaWeb::Light;
     # TEST
     is($svn_ra_web->url_suffix(), "?trans_hide_all=1", 
         "Checking for url_suffix() when rev is speicified"
+    );
+}
+
+
+# Unit tests for get_url_suffix_with_extras
+
+sub my_url_suffix_test
+{
+    my %args = (@_);
+
+    @CGI::new_params =
+    (
+        'path_info' => "/trunk/hello/",
+        'params' =>
+        {
+        },
+        'query_string' => $args{'query_string'},
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    is(
+        $svn_ra_web->get_url_suffix_with_extras(@{$args{'func_params'}}), 
+        $args{'result'},
+        $args{'msg'}
+    );
+}
+{
+    # TEST
+    my_url_suffix_test(
+        'query_string' => "",
+        'func_params' => [],
+        'result' => "",
+        'msg' => "Testing empty for both query string and additional",
+    );
+
+    # TEST
+    my_url_suffix_test(
+        'query_string' => "h=j&k=l",
+        'func_params' => [],
+        'result' => "?h=j&k=l",
+        'msg' => "Testing filled in query string and no additonal",
+    );
+
+    # TEST
+    my_url_suffix_test(
+        'query_string' => "",
+        'func_params' => ["panel=1"],
+        'result' => "?panel=1",
+        'msg' => "Testing empty query string and additional params",
+    );
+
+    # TEST
+    my_url_suffix_test(
+        'query_string' => "h=j&k=l",
+        'func_params' => ["panel=1"],
+        'result' => "?h=j&k=l;panel=1",
+        'msg' => "Testing empty query string and additional params",
     );
 }
 
