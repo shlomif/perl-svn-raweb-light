@@ -1086,7 +1086,7 @@ EOF
 }
 
 
-# Check for url_translations of a root directory
+# Check for the help being displayed properly.
 {
     local @CGI::new_params = 
     (
