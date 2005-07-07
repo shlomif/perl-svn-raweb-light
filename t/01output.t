@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -1127,6 +1127,10 @@ EOF
     
     my $results = get_out_buffer();
 
+    # TEST
+    # Make sure that we print the header.
+    like($results, qr{^Content-Type: text/html\n\n},
+        "Check for a valid header");
     # TEST
     like($results, qr{<title>SVN::RaWeb::Light Help Screen</title>},
         "Check for a valid help screen - title");

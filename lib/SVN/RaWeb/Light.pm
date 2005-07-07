@@ -465,6 +465,8 @@ sub process_file
 sub process_help
 {
     my $self = shift;
+
+    print $self->cgi()->header();
     SVN::RaWeb::Light::Help::print_data();
 }
 
