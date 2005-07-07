@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 37;
+use Test::More tests => 39;
 
 # We need to load the mocking modules first because they fill the 
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
@@ -1137,6 +1137,60 @@ EOF
     # TEST
     like($results, qr{<h1>SVN::RaWeb::Light Help Screen</h1>},
         "Check for a valid help screen - h1");
+}
+
+# Check for the panel parameter displaying an error notice - temporarily 
+# until it's implemented.
+{
+    local @CGI::new_params = 
+    (
+        'path_info' => "/",
+        'params' =>
+        {
+            'panel' => "1",
+        },
+        'query_string' => "panel=1",
+    );
+
+    local @SVN::Ra::new_params =
+    (
+        'get_latest_revnum' => sub {
+            die "Called get_latest_revnum and shouldn't";
+        },
+        'check_path' => sub {
+            die "Called check_path and shouldn't";
+        },
+        'get_dir' => sub {
+            die "Called get_dir and shouldn't";
+        },
+    );
+
+    reset_out_buffer();
+
+    my $svn_ra_web =
+        SVN::RaWeb::Light->new(
+            'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
+        );
+
+    eval {
+    $svn_ra_web->run();
+    };
+
+    # TEST
+    ok(!$@, "Testing that no exception was thrown.");
+    
+    my $results = get_out_buffer();
+
+    # TEST
+    is ($results, <<"EOF",
+Content-Type: text/html
+
+<html><body><h1>Not Implemented Yet</h1>
+<p>Sorry but the control panel is not implemented yet.</p>
+</body>
+</html>
+EOF
+        "Temporary check for control panel not-impl yet msg.");
 }
 
 1;

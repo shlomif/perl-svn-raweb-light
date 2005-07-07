@@ -479,6 +479,18 @@ sub real_run
     {
         return $self->process_help();
     }
+    if ($cgi->param("panel"))
+    {
+        print $cgi->header();
+        print <<"EOF";
+<html><body><h1>Not Implemented Yet</h1>
+<p>Sorry but the control panel is not implemented yet.</p>
+</body>
+</html>
+EOF
+        return 0;
+    }
+    
     $self->calc_rev_num();
     $self->calc_path();
 
