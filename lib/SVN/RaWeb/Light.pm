@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.5.6_00';
+$VERSION = '0.6.0';
 
 use CGI ();
 use IO::Scalar;
