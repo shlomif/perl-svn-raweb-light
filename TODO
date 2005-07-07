@@ -1,17 +1,3 @@
-* URL Translations:
-    - Document in the POD.
-    - Document in Changes.
-    - Implement the avoid URL translations CGI param.
-    - Implement the user-specified URL translation.
-    - Implement URL translations after the directory listing.
-    - Implement the user-defined URL translation.
-
-* Add a Help Screen 
-    - Implement the actual detection and rendering of the help screen.
-
-* Place a message that indicates that the control panel at the moment is
-not functional if param('panel') is present.
-
 * Add a Control Console.
 
 Long-Term:

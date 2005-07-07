@@ -1,5 +1,11 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.6.0
+    - There's now a full test coverage.
+    - Added the URL translations. (with all relevant CGI parameters)
+    - Added the Help Screen.
+    - Added a link to showing the control panel.
+
 0.4.0      Tue Apr 12 06:27:50 2005
     - Added a test suite.
     - Did some code cleanup.

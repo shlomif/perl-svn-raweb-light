@@ -570,26 +570,53 @@ repository similar to the default Subversion http:// hosting.
 
     $app->run();
 
+
 =head1 DESCRIPTION
 
 SVN::RaWeb::Light is a class implementing a CGI script for browsing
 a Subversion repository given as a URL, and accessed through the Subversion
 Repository-Access layer. Its interface emulates that of the default
-Subversion http://-interface, only with the improvement of a C<rev> CGI 
-parameter to specify the revision of the repository.
+Subversion http://-interface, with some improvements.
 
-To use it, install the module (using CPAN or by copying it to your path) and 
+To use it, install the module (using CPAN or by copying it to your path) and
 write the CGI script given in the SYNOPSIS with the URL to the repository 
 passed as the C<'url'> parameter to the constructor.
 
-To use it just fire up a web-browser to the URL of the script. Note that
-you can pass the rev CGI parameter to designate a revision of the repository
-to browse instead of HEAD. This rev will be preserved to subsequent URLs
-that you browse. For example:
+To use it just fire up a web-browser to the URL of the script. 
 
-    http://www.myhost.net/ra-web-light/web-cpan/trunk/?rev=20
- 
-will browse the trunk in revision 20.
+=head2 URL Translations
+
+URL translations are a method to translate the current path of the script to 
+to a URL. The latter is usually a URL of the Subversioned resource, which can 
+be manipulated directly using the C<svn> client and other clients.
+
+One can specify pre-defined URL translations, inside the value of the 
+C<'url_translations'> argument:
+
+    #!/usr/bin/perl -w
+
+    use SVN::RaWeb::Light;
+
+    my $app = SVN::RaWeb::Light->new(
+        'url' => "svn://svn.berlios.de/web-cpan/",
+        'url_translations' => 
+        [
+            {
+                'label' => "Read/Write URL",
+                'url' => "svn+ssh://svn.berlios.de/svnroot/repos/web-cpan/",
+            },
+            {
+                'label' => "Read URL",
+                'url' => "svn://svn.berlios.de/web-cpan/",
+            },
+        ],
+    );
+
+    $app->run();
+
+C<label> specifies the label as would appear on the page. C<url> is the URL
+relative to the script's base directory. The complete path would be the 
+URL in the URL translation appended by the path that the script points to.
 
 =head1 AUTHOR
 
