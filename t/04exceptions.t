@@ -19,7 +19,7 @@ package SVN::RaWeb::Light::ThrowHash;
 use base 'SVN::RaWeb::Light';
 
 # Throw a hash reference without a 'callback' parameter.
-sub real_run
+sub _real_run
 {
     die +{ 'one' => "two", 'shlomi' => "fish", };
 }
@@ -29,7 +29,7 @@ package SVN::RaWeb::Light::ThrowArray;
 use base 'SVN::RaWeb::Light';
 
 # Throw a hash reference without a 'callback' parameter.
-sub real_run
+sub _real_run
 {
     die [ "eenie", "meenie", "mynie", "mow"];
 }
@@ -39,7 +39,7 @@ package SVN::RaWeb::Light::ThrowString;
 use base 'SVN::RaWeb::Light';
 
 # Throw a hash reference without a 'callback' parameter.
-sub real_run
+sub _real_run
 {
     die "Hallelujah - an exception was thrown";
 }

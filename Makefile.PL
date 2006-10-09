@@ -1,27 +1,11 @@
 use ExtUtils::MakeMaker;
 
-open O, ">", "lib/SVN/RaWeb/Light/Help.pm";
-print O <<'EOF';
-package SVN::RaWeb::Light::Help;
+use File::Spec;
+use lib File::Spec->catdir(File::Spec->curdir(), "inc");
 
-sub print_data
-{
-    local $/;
-    print <DATA>;
-}
+use SVN::RaWeb::Light::GenHelp;
 
-1;
-EOF
-
-print O "__DATA__\n";
-
-{
-    local $/;
-    open I, "<", "docs/Help.html";
-    print O <I>;
-    close(I);
-}
-close(O);
+_gen_help();
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.

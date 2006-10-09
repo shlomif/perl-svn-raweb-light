@@ -35,7 +35,7 @@ sub mytest
         );
 
     is_deeply(
-        $svn_raweb->get_url_translations(
+        $svn_raweb->_get_url_translations(
             'is_list_item' => $is_list_item,
         ),
         $results,

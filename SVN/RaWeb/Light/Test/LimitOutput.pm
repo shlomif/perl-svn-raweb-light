@@ -2,11 +2,11 @@ package SVN::RaWeb::Light::OutputListOnly;
 
 use base 'SVN::RaWeb::Light';
 
-sub process_dir
+sub _process_dir
 {
     my $self = shift;
-    $self->get_dir();
-    $self->print_items_list();
+    $self->_get_dir();
+    $self->_print_items_list();
 }
 
 1;
@@ -15,13 +15,13 @@ package SVN::RaWeb::Light::OutputTransAndList;
 
 use base 'SVN::RaWeb::Light';
 
-sub process_dir
+sub _process_dir
 {
     my $self = shift;
-    $self->get_dir();
+    $self->_get_dir();
 
-    print $self->render_top_url_translations_text();
-    $self->print_items_list();
+    print $self->_render_top_url_translations_text();
+    $self->_print_items_list();
 }
 
 1;

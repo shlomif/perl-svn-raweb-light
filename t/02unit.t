@@ -21,7 +21,7 @@ use SVN::RaWeb::Light;
 
     my $svn_ra_web = SVN::RaWeb::Light->new('url' => "http://svn-i.shlomifish.org/svn/myrepos/");
 
-    $svn_ra_web->multi_slashes();
+    $svn_ra_web->_multi_slashes();
 
     my $results = get_out_buffer();
 
@@ -42,7 +42,7 @@ use SVN::RaWeb::Light;
 
     my $svn_ra_web = SVN::RaWeb::Light->new('url' => "http://svn-i.shlomifish.org/svn/myrepos/");
 
-    my $url_trans = $svn_ra_web->get_url_translations();
+    my $url_trans = $svn_ra_web->_get_url_translations();
 
     # TEST
     is (ref($url_trans), "ARRAY", 
@@ -73,7 +73,7 @@ use SVN::RaWeb::Light;
             ],
         );
 
-    my $url_trans = $svn_ra_web->get_url_translations();
+    my $url_trans = $svn_ra_web->_get_url_translations();
 
     # TEST
     is (ref($url_trans), "ARRAY", 
@@ -115,7 +115,7 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
 
-    $svn_ra_web->calc_rev_num();
+    $svn_ra_web->_calc_rev_num();
 
     # TEST
     is($svn_ra_web->rev_num(), "600", 
@@ -146,7 +146,7 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
 
-    $svn_ra_web->calc_rev_num();
+    $svn_ra_web->_calc_rev_num();
 
     # TEST
     is($svn_ra_web->rev_num(), "5267",
@@ -172,7 +172,7 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
 
-    $svn_ra_web->calc_path();
+    $svn_ra_web->_calc_path();
 
     # TEST
     is($svn_ra_web->path(), "trunk/build.txt",
@@ -196,7 +196,7 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
 
-    $svn_ra_web->calc_path();
+    $svn_ra_web->_calc_path();
 
     # TEST
     is($svn_ra_web->path(), "trunk/src/perl",
@@ -229,7 +229,7 @@ use SVN::RaWeb::Light;
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
 
-    $svn_ra_web->calc_rev_num();
+    $svn_ra_web->_calc_rev_num();
 
     # TEST
     is($svn_ra_web->url_suffix(), "?trans_hide_all=1", 
@@ -261,7 +261,7 @@ sub my_url_suffix_test
         );
 
     is(
-        $svn_ra_web->get_url_suffix_with_extras(@{$args{'func_params'}}), 
+        $svn_ra_web->_get_url_suffix_with_extras(@{$args{'func_params'}}), 
         $args{'result'},
         $args{'msg'}
     );

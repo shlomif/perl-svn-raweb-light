@@ -5,29 +5,9 @@ use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "inc");
 
 use Test::Run::Builder;
+use SVN::RaWeb::Light::GenHelp;
 
-open O, ">", "lib/SVN/RaWeb/Light/Help.pm";
-print O <<'EOF';
-package SVN::RaWeb::Light::Help;
-
-sub print_data
-{
-    local $/;
-    print <DATA>;
-}
-
-1;
-EOF
-
-print O "__DATA__\n";
-
-{
-    local $/;
-    open I, "<", "docs/Help.html";
-    print O <I>;
-    close(I);
-}
-close(O);
+_gen_help();
 
 my $build = Test::Run::Builder->new(
     module_name => 'SVN::RaWeb::Light',

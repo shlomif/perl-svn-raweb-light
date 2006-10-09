@@ -4,6 +4,7 @@ Changes
 COPYING
 docs/Help.html
 examples/berlios.pl
+inc/SVN/RaWeb/Light/GenHelp.pm
 inc/Test/Run/Builder.pm
 lib/SVN/RaWeb/Light/Help.pm
 lib/SVN/RaWeb/Light.pm
@@ -20,4 +21,6 @@ t/02unit.t
 t/03trans_unit.t
 t/04exceptions.t
 TODO
+t/pod-coverage.t
+t/pod.t
 t/SVN-RaWeb-Light.t

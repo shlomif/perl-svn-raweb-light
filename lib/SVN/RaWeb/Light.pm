@@ -30,11 +30,11 @@ sub new
     my $self = {};
     my $class = shift;
     bless $self, $class;
-    $self->initialize(@_);
+    $self->_init(@_);
     return $self;
 }
 
-sub initialize
+sub _init
 {
     my $self = shift;
     
@@ -56,7 +56,7 @@ sub initialize
     return $self;
 }
 
-sub get_user_url_translations
+sub _get_user_url_translations
 {
     my $self = shift;
 
@@ -77,7 +77,7 @@ sub get_user_url_translations
 
 # TODO :
 # Create a way for the user to specify one extra url translation of his own.
-sub get_url_translations
+sub _get_url_translations
 {
     my $self = shift;
 
@@ -97,11 +97,11 @@ sub get_url_translations
             () :
             (@{$self->{'url_translations'}})
         ),
-        @{$self->get_user_url_translations()},
+        @{$self->_get_user_url_translations()},
     ];
 }
 
-sub get_mode
+sub _get_mode
 {
     my $self = shift;
 
@@ -111,7 +111,7 @@ sub get_mode
 }
 
 # This function must be called before rev_num() and url_suffix() are valid.
-sub calc_rev_num
+sub _calc_rev_num
 {
     my $self = shift;
 
@@ -131,12 +131,12 @@ sub calc_rev_num
     }
     
     $self->rev_num($rev_num);
-    $self->url_suffix($self->get_url_suffix_with_extras());
+    $self->url_suffix($self->_get_url_suffix_with_extras());
     $self->esc_url_suffix(escape($self->url_suffix()));
 }
 
 # Gets the URL suffix calculated with optional extra components.
-sub get_url_suffix_with_extras
+sub _get_url_suffix_with_extras
 {
     my $self = shift;
     my $components = shift;
@@ -166,7 +166,7 @@ sub get_url_suffix_with_extras
     }
 }
 
-sub calc_path
+sub _calc_path
 {
     my $self = shift;
 
@@ -183,7 +183,7 @@ sub calc_path
     }
     if ($path =~ /\/\//)
     {
-        die +{ 'callback' => sub { $self->multi_slashes(); } };
+        die +{ 'callback' => sub { $self->_multi_slashes(); } };
     }
 
     $path =~ s!^/!!;
@@ -192,19 +192,19 @@ sub calc_path
     $self->path($path);
 }
 
-sub get_correct_node_kind
+sub _get_correct_node_kind
 {
     my $self = shift;
     return $self->should_be_dir() ? $SVN::Node::dir : $SVN::Node::file;
 }
 
-sub get_escaped_path
+sub _get_escaped_path
 {
     my $self = shift;
     return escape($self->path());
 }
 
-sub check_node_kind
+sub _check_node_kind
 {
     my $self = shift;
     my $node_kind = shift;
@@ -220,7 +220,7 @@ sub check_node_kind
                 },
         };        
     }
-    elsif ($node_kind ne $self->get_correct_node_kind())
+    elsif ($node_kind ne $self->_get_correct_node_kind())
     {
         die +{
             'callback' =>
@@ -236,7 +236,7 @@ sub check_node_kind
     }
 }
 
-sub get_esc_item_url_translations
+sub _get_esc_item_url_translations
 {
     my $self = shift;
 
@@ -251,14 +251,14 @@ sub get_esc_item_url_translations
                 'label' => escape($_->{'label'}),
             }
             }
-            @{$self->get_url_translations('is_list_item' => 1)}
+            @{$self->_get_url_translations('is_list_item' => 1)}
         )
         ];
     }
     return $self->{'escaped_item_url_translations'};
 }
 
-sub render_list_item
+sub _render_list_item
 {
     my ($self, $args) = (@_);
 
@@ -270,12 +270,12 @@ sub render_list_item
         {
             " [<a href=\"$_->{url}$args->{path_in_repos}\">$_->{label}</a>]"
         }
-        @{$self->get_esc_item_url_translations()}
+        @{$self->_get_esc_item_url_translations()}
         ) .
         "</li>\n";    
 }
 
-sub get_esc_up_path
+sub _get_esc_up_path
 {
     my $self = shift;
 
@@ -284,21 +284,21 @@ sub get_esc_up_path
     return escape($1);    
 }
 
-sub real_render_up_list_item
+sub _real_render_up_list_item
 {
     my $self = shift;
-    return $self->render_list_item(
+    return $self->_render_list_item(
         {
             'link' => "../",
             'label' => "..",
-            'path_in_repos' => $self->get_esc_up_path(),
+            'path_in_repos' => $self->_get_esc_up_path(),
         }
     );
 }
 
 # The purpose of this function ios to get the list item of the ".." directory
 # that goes one level up in the repository.
-sub render_up_list_item
+sub _render_up_list_item
 {
     my $self = shift;
     # If the path is the root - then we cannot have an upper directory
@@ -308,13 +308,13 @@ sub render_up_list_item
     }
     else
     {
-        return $self->real_render_up_list_item();
+        return $self->_real_render_up_list_item();
     }
 }
 
 # This method gets the escaped path along with a potential trailing slash
 # (if it isn't empty)
-sub get_normalized_path
+sub _get_normalized_path
 {
     my $self = shift;
 
@@ -326,7 +326,7 @@ sub get_normalized_path
     return $url;
 }
 
-sub render_regular_list_item
+sub _render_regular_list_item
 {
     my ($self, $entry) = @_;
 
@@ -336,28 +336,28 @@ sub render_regular_list_item
         $escaped_name .= "/";
     }
 
-    return $self->render_list_item(
+    return $self->_render_list_item(
         {
             (map { $_ => $escaped_name } qw(link label)),
             'path_in_repos' => 
-                (escape($self->get_normalized_path()).$escaped_name),
+                (escape($self->_get_normalized_path()).$escaped_name),
         }
     );
 }
 
-sub render_top_url_translations_text
+sub _render_top_url_translations_text
 {
     my $self = shift;
     
     my $top_url_translations =
-        $self->get_url_translations('is_list_item' => 0);
+        $self->_get_url_translations('is_list_item' => 0);
     my $ret = "";
     if (@$top_url_translations)
     {
         $ret .= "<table border=\"1\">\n";
         foreach my $trans (@$top_url_translations)
         {
-            my $url = $self->get_normalized_path();
+            my $url = $self->_get_normalized_path();
             my $escaped_url = escape($trans->{'url'} . $url);
             my $escaped_label = escape($trans->{'label'});
             $ret .= "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
@@ -367,12 +367,12 @@ sub render_top_url_translations_text
     return $ret;
 }
 
-sub render_dir_header
+sub _render_dir_header
 {
     my $self = shift;
 
     my $title = "Revision ". $self->rev_num() . ": /" . 
-        $self->get_escaped_path();
+        $self->_get_escaped_path();
     my $ret = "";
     $ret .= $self->cgi()->header();
     $ret .= "<html><head><title>$title</title></head>\n";
@@ -382,53 +382,53 @@ sub render_dir_header
     return $ret;
 }
 
-sub get_items_list_items_order
+sub _get_items_list_items_order
 {
     my $self = shift;
     return [ sort { $a cmp $b } keys(%{$self->dir_contents()}) ];
 }
 
-sub get_items_list_regular_items
+sub _get_items_list_regular_items
 {
     my $self = shift;
     return 
         [map 
         {
-            $self->render_regular_list_item($_)
+            $self->_render_regular_list_item($_)
         } 
-        (@{$self->get_items_list_items_order()})
+        (@{$self->_get_items_list_items_order()})
         ];
 }
 
-sub get_items_list_items
+sub _get_items_list_items
 {
     my $self = shift;
     return 
     [
-        $self->render_up_list_item(),
-        @{$self->get_items_list_regular_items()},
+        $self->_render_up_list_item(),
+        @{$self->_get_items_list_regular_items()},
     ];
 }
 
-sub print_items_list
+sub _print_items_list
 {
     my ($self) = @_;
     print "<ul>\n";
     
-    print @{$self->get_items_list_items()};
+    print @{$self->_get_items_list_items()};
     print "</ul>\n";
 }
 
-sub print_control_section
+sub _print_control_section
 {
     my $self = shift;
     print "<ul>\n" .
         "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
-        "<li><a href=\"./" . escape($self->get_url_suffix_with_extras("panel=1")) . "\">Show Control Panel</a></li>\n" .
+        "<li><a href=\"./" . escape($self->_get_url_suffix_with_extras("panel=1")) . "\">Show Control Panel</a></li>\n" .
         "</ul>\n";
 }
 
-sub get_dir
+sub _get_dir
 {
     my $self = shift;
 
@@ -437,18 +437,18 @@ sub get_dir
     $self->dir_contents($dir_contents);
 }
 
-sub process_dir
+sub _process_dir
 {
     my $self = shift;
-    $self->get_dir();
-    print $self->render_dir_header();
-    print $self->render_top_url_translations_text();
-    $self->print_items_list();
-    $self->print_control_section();
+    $self->_get_dir();
+    print $self->_render_dir_header();
+    print $self->_render_top_url_translations_text();
+    $self->_print_items_list();
+    $self->_print_control_section();
     print "</body></html>\n";
 }
 
-sub process_file
+sub _process_file
 {
     my $self = shift;
 
@@ -462,7 +462,7 @@ sub process_file
     print $buffer;
 }
 
-sub process_help
+sub _process_help
 {
     my $self = shift;
 
@@ -470,14 +470,14 @@ sub process_help
     SVN::RaWeb::Light::Help::print_data();
 }
 
-sub real_run
+sub _real_run
 {
     my $self = shift;
     my $cgi = $self->cgi();
 
-    if ($self->get_mode() eq "help")
+    if ($self->_get_mode() eq "help")
     {
-        return $self->process_help();
+        return $self->_process_help();
     }
     if ($cgi->param("panel"))
     {
@@ -491,22 +491,22 @@ EOF
         return 0;
     }
     
-    $self->calc_rev_num();
-    $self->calc_path();
+    $self->_calc_rev_num();
+    $self->_calc_path();
 
     my $node_kind =
         $self->svn_ra()->check_path($self->path(), $self->rev_num());
 
-    $self->check_node_kind($node_kind);
+    $self->_check_node_kind($node_kind);
 
     if ($node_kind eq $SVN::Node::dir)
     {
-        return $self->process_dir();
+        return $self->_process_dir();
     }
     # This means $node_kind eq $SVN::Node::file
     else
     {
-        return $self->process_file();
+        return $self->_process_file();
     }
 }
 
@@ -516,7 +516,7 @@ sub run
 
     my @ret;
     eval {
-        @ret = $self->real_run();
+        @ret = $self->_real_run();
     };
 
     if ($@)
@@ -536,7 +536,7 @@ sub run
     }
 }
 
-sub multi_slashes
+sub _multi_slashes
 {
     my $self = shift;
     print $self->cgi()->header();
@@ -617,6 +617,16 @@ C<'url_translations'> argument:
 C<label> specifies the label as would appear on the page. C<url> is the URL
 relative to the script's base directory. The complete path would be the 
 URL in the URL translation appended by the path that the script points to.
+
+=head1 METHODS
+
+=head2 my $app = SVN::RaWeb::Light->new(...)
+
+Initialises a new application.
+
+=head2 $app->run();
+
+Runs it in the current process.
 
 =head1 AUTHOR
 
