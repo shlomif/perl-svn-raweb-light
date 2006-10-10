@@ -1,3 +1,5 @@
+use strict;
+
 use ExtUtils::MakeMaker;
 
 use File::Spec;

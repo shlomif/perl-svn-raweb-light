@@ -1,8 +1,14 @@
+use strict;
+use warnings;
+
 sub _gen_help
 {
 open O, ">", "lib/SVN/RaWeb/Light/Help.pm";
 print O <<"EOF";
 package SVN::RaWeb::Light::Help;
+
+use strict;
+use warnings;
 
 \=head1 NAME
 
@@ -20,7 +26,7 @@ Prints the HTML data to the standard output.
 
 \=head1 AUTHOR
 
-Shlomi Fish, E<lt>shlomif@iglu.org.ilE<gt>
+Shlomi Fish, E<lt>shlomif\@iglu.org.ilE<gt>
 
 \=head1 COPYRIGHT AND LICENSE
 

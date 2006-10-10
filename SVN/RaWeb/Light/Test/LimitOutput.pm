@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 package SVN::RaWeb::Light::OutputListOnly;
 
 use base 'SVN::RaWeb::Light';
