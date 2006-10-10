@@ -1,5 +1,11 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.60001    Tue Oct 10 05:47:37 IST 2006
+    - Added the Build.PL file and got it to build.
+    - Added "use strict" and "use warnings" to all files.
+    - Added t/pod.t and t/pod-coverage.t and made sure we have full POD
+    coverage.
+
 0.6.0      Thu Jul 07 11:12:53 2005
     - There's now a full test coverage.
     - Added the URL translations. (with all relevant CGI parameters)
