@@ -1,5 +1,10 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.60002    Sat Jun  4 11:21:18 IDT 2011
+    - Add more modules to the dependencies, including SVN::Core
+        - http://www.cpantesters.org/cpan/report/d85c4718-8c70-11e0-92a5-c348c9b7ec30
+    - Fix the POD coverage by making _escape private.
+
 0.60001    Tue Oct 10 05:47:37 IST 2006
     - Added the Build.PL file and got it to build.
     - Added "use strict" and "use warnings" to all files.
