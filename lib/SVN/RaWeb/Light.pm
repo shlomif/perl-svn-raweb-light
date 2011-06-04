@@ -22,8 +22,8 @@ __PACKAGE__->mk_accessors(qw(cgi dir_contents esc_url_suffix path rev_num),
 
 # Preloaded methods go here.
 
-# We alias escape() to CGI::escapeHTML().
-*escape = \&CGI::escapeHTML;
+# We alias _escape() to CGI::escapeHTML().
+*_escape = \&CGI::escapeHTML;
 
 sub new
 {
@@ -132,7 +132,7 @@ sub _calc_rev_num
     
     $self->rev_num($rev_num);
     $self->url_suffix($self->_get_url_suffix_with_extras());
-    $self->esc_url_suffix(escape($self->url_suffix()));
+    $self->esc_url_suffix(_escape($self->url_suffix()));
 }
 
 # Gets the URL suffix calculated with optional extra components.
@@ -201,7 +201,7 @@ sub _get_correct_node_kind
 sub _get_escaped_path
 {
     my $self = shift;
-    return escape($self->path());
+    return _escape($self->path());
 }
 
 sub _check_node_kind
@@ -247,8 +247,8 @@ sub _get_esc_item_url_translations
         (
             map { 
             +{ 
-                'url' => escape($_->{'url'}), 
-                'label' => escape($_->{'label'}),
+                'url' => _escape($_->{'url'}), 
+                'label' => _escape($_->{'label'}),
             }
             }
             @{$self->_get_url_translations('is_list_item' => 1)}
@@ -281,7 +281,7 @@ sub _get_esc_up_path
 
     $self->path() =~ /^(.*?)[^\/]+$/;
 
-    return escape($1);    
+    return _escape($1);    
 }
 
 sub _real_render_up_list_item
@@ -330,7 +330,7 @@ sub _render_regular_list_item
 {
     my ($self, $entry) = @_;
 
-    my $escaped_name = escape($entry); 
+    my $escaped_name = _escape($entry); 
     if ($self->dir_contents->{$entry}->kind() eq $SVN::Node::dir)
     {
         $escaped_name .= "/";
@@ -340,7 +340,7 @@ sub _render_regular_list_item
         {
             (map { $_ => $escaped_name } qw(link label)),
             'path_in_repos' => 
-                (escape($self->_get_normalized_path()).$escaped_name),
+                (_escape($self->_get_normalized_path()).$escaped_name),
         }
     );
 }
@@ -358,8 +358,8 @@ sub _render_top_url_translations_text
         foreach my $trans (@$top_url_translations)
         {
             my $url = $self->_get_normalized_path();
-            my $escaped_url = escape($trans->{'url'} . $url);
-            my $escaped_label = escape($trans->{'label'});
+            my $escaped_url = _escape($trans->{'url'} . $url);
+            my $escaped_label = _escape($trans->{'label'});
             $ret .= "<tr><td><a href=\"$escaped_url\">$escaped_label</a></td></tr>\n";
         }
         $ret .= "</table>\n";
@@ -424,7 +424,7 @@ sub _print_control_section
     my $self = shift;
     print "<ul>\n" .
         "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
-        "<li><a href=\"./" . escape($self->_get_url_suffix_with_extras("panel=1")) . "\">Show Control Panel</a></li>\n" .
+        "<li><a href=\"./" . _escape($self->_get_url_suffix_with_extras("panel=1")) . "\">Show Control Panel</a></li>\n" .
         "</ul>\n";
 }
 
