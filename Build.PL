@@ -27,7 +27,7 @@ my $build = Test::Run::Builder->new(
         'strict' => 0,
         'SVN::Core' => 0,
         'SVN::Ra' => 0,
-        'perl' => 0,
+        'perl' => '5.008',
         'vars' => 0,
         'warnings' => 0,
     },
