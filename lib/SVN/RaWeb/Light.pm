@@ -6,7 +6,7 @@ use warnings;
 use 5.008;
 use vars qw($VERSION);
 
-$VERSION = '0.60002';
+$VERSION = '0.60003';
 
 use CGI ();
 use IO::Scalar;

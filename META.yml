@@ -21,7 +21,7 @@ name: SVN-RaWeb-Light
 provides:
   SVN::RaWeb::Light:
     file: lib/SVN/RaWeb/Light.pm
-    version: 0.60002
+    version: 0.60003
 requires:
   CGI: 0
   Class::Accessor: 0
@@ -34,4 +34,4 @@ requires:
   warnings: 0
 resources:
   license: http://www.opensource.org/licenses/mit-license.php
-version: 0.60002
+version: 0.60003
