@@ -28,7 +28,7 @@ requires:
   IO::Scalar: 0
   SVN::Core: 0
   SVN::Ra: 0
-  perl: 0
+  perl: 5.008
   strict: 0
   vars: 0
   warnings: 0
