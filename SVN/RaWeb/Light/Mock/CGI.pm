@@ -12,9 +12,9 @@ sub new
     my $class = shift;
     my $self = {};
     bless $self, $class;
-    
+
     $self->initialize(@new_params);
-    
+
     return $self;
 }
 
@@ -104,7 +104,7 @@ sub header
     {
         $type = $args{-type};
     }
-    
+
     return "Content-Type: $type\n\n";
 }
 

@@ -9,9 +9,9 @@ sub new
     my $class = shift;
     my $self = {};
     bless $self, $class;
-    
+
     $self->initialize('orig_params' => [@_], @new_params);
-    
+
     return $self;
 }
 
@@ -29,7 +29,7 @@ sub initialize
         }
         ;
 
-    $self->{'check_path'} = $args{'check_path'} || 
+    $self->{'check_path'} = $args{'check_path'} ||
         sub {
             my $self = shift;
             my $path = shift;
@@ -54,18 +54,18 @@ sub initialize
         my $path = shift;
         my $rev_num = shift;
 
-        return 
+        return
             (
                 {
-                    'Hello.pm' => 
-                    { 
+                    'Hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
                     {
                         'kind' => $SVN::Node::dir,
                     },
-                }, 
+                },
                 $rev_num
             );
     };
@@ -89,12 +89,12 @@ sub get_dir
 {
     my $self = shift;
     my ($dir_contents, $fetched_rev) = $self->{'get_dir'}->($self, @_);
-    return 
-        (+{ 
-            map 
-            { 
-                $_ => 
-                    SVN::RaWeb::Light::Mock::DirEntry->new($_, $dir_contents->{$_}) 
+    return
+        (+{
+            map
+            {
+                $_ =>
+                    SVN::RaWeb::Light::Mock::DirEntry->new($_, $dir_contents->{$_})
             }
             keys(%$dir_contents)
         }, $fetched_rev);
@@ -103,7 +103,7 @@ sub get_dir
 sub get_file
 {
     my $self = shift;
-    
+
     return $self->{'get_file'}->($self,@_);
 }
 

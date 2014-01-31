@@ -18,7 +18,7 @@ use base 'Class::Accessor';
 
 use SVN::RaWeb::Light::Help;
 
-__PACKAGE__->mk_accessors(qw(cgi dir_contents esc_url_suffix path rev_num), 
+__PACKAGE__->mk_accessors(qw(cgi dir_contents esc_url_suffix path rev_num),
     qw(should_be_dir svn_ra url_suffix));
 
 # Preloaded methods go here.
@@ -38,9 +38,9 @@ sub new
 sub _init
 {
     my $self = shift;
-    
+
     my %args = (@_);
-    
+
     my $cgi = CGI->new();
     $self->cgi($cgi);
 
@@ -67,8 +67,8 @@ sub _get_user_url_translations
     for my $i (0 .. $#transes)
     {
         my $elem = $transes[$i];
-        push @ret, 
-            (($elem =~ /^([^:,]*),(.*)$/) ? 
+        push @ret,
+            (($elem =~ /^([^:,]*),(.*)$/) ?
                 { 'label' => $1, 'url' => $2, } :
                 { 'label' => ("UserDef" . ($i+1)), 'url' => $elem, }
             );
@@ -130,7 +130,7 @@ sub _calc_rev_num
     {
         $rev_num = $self->svn_ra()->get_latest_revnum();
     }
-    
+
     $self->rev_num($rev_num);
     $self->url_suffix($self->_get_url_suffix_with_extras());
     $self->esc_url_suffix(_escape($self->url_suffix()));
@@ -152,7 +152,7 @@ sub _get_url_suffix_with_extras
         else
         {
             return "";
-        }        
+        }
     }
     else
     {
@@ -219,7 +219,7 @@ sub _check_node_kind
                     print "<html><head><title>Does not exist!</title></head>";
                     print "<body><h1>Does not exist!</h1></body></html>";
                 },
-        };        
+        };
     }
     elsif ($node_kind ne $self->_get_correct_node_kind())
     {
@@ -228,7 +228,7 @@ sub _check_node_kind
                 sub {
                     $self->path() =~ m{([^/]+)$};
                     print $self->cgi()->redirect(
-                        ($node_kind eq $SVN::Node::dir) ? 
+                        ($node_kind eq $SVN::Node::dir) ?
                             "./$1/" :
                             "../$1"
                         );
@@ -243,12 +243,12 @@ sub _get_esc_item_url_translations
 
     if (!exists($self->{'escaped_item_url_translations'}))
     {
-        $self->{'escaped_item_url_translations'} = 
+        $self->{'escaped_item_url_translations'} =
         [
         (
-            map { 
-            +{ 
-                'url' => _escape($_->{'url'}), 
+            map {
+            +{
+                'url' => _escape($_->{'url'}),
                 'label' => _escape($_->{'label'}),
             }
             }
@@ -267,13 +267,13 @@ sub _render_list_item
         qq(<li><a href="$args->{link}) .
         qq(@{[$self->esc_url_suffix()]}">$args->{label}</a>) .
         join("",
-        map 
+        map
         {
             " [<a href=\"$_->{url}$args->{path_in_repos}\">$_->{label}</a>]"
         }
         @{$self->_get_esc_item_url_translations()}
         ) .
-        "</li>\n";    
+        "</li>\n";
 }
 
 sub _get_esc_up_path
@@ -282,7 +282,7 @@ sub _get_esc_up_path
 
     $self->path() =~ /^(.*?)[^\/]+$/;
 
-    return _escape($1);    
+    return _escape($1);
 }
 
 sub _real_render_up_list_item
@@ -331,7 +331,7 @@ sub _render_regular_list_item
 {
     my ($self, $entry) = @_;
 
-    my $escaped_name = _escape($entry); 
+    my $escaped_name = _escape($entry);
     if ($self->dir_contents->{$entry}->kind() eq $SVN::Node::dir)
     {
         $escaped_name .= "/";
@@ -340,7 +340,7 @@ sub _render_regular_list_item
     return $self->_render_list_item(
         {
             (map { $_ => $escaped_name } qw(link label)),
-            'path_in_repos' => 
+            'path_in_repos' =>
                 (_escape($self->_get_normalized_path()).$escaped_name),
         }
     );
@@ -349,7 +349,7 @@ sub _render_regular_list_item
 sub _render_top_url_translations_text
 {
     my $self = shift;
-    
+
     my $top_url_translations =
         $self->_get_url_translations('is_list_item' => 0);
     my $ret = "";
@@ -372,7 +372,7 @@ sub _render_dir_header
 {
     my $self = shift;
 
-    my $title = "Revision ". $self->rev_num() . ": /" . 
+    my $title = "Revision ". $self->rev_num() . ": /" .
         $self->_get_escaped_path();
     my $ret = "";
     $ret .= $self->cgi()->header();
@@ -392,11 +392,11 @@ sub _get_items_list_items_order
 sub _get_items_list_regular_items
 {
     my $self = shift;
-    return 
-        [map 
+    return
+        [map
         {
             $self->_render_regular_list_item($_)
-        } 
+        }
         (@{$self->_get_items_list_items_order()})
         ];
 }
@@ -404,7 +404,7 @@ sub _get_items_list_regular_items
 sub _get_items_list_items
 {
     my $self = shift;
-    return 
+    return
     [
         $self->_render_up_list_item(),
         @{$self->_get_items_list_regular_items()},
@@ -415,7 +415,7 @@ sub _print_items_list
 {
     my ($self) = @_;
     print "<ul>\n";
-    
+
     print @{$self->_get_items_list_items()};
     print "</ul>\n";
 }
@@ -457,7 +457,7 @@ sub _process_file
     my $fh = IO::Scalar->new(\$buffer);
     my ($fetched_rev, $props)
         = $self->svn_ra()->get_file($self->path(), $self->rev_num(), $fh);
-    print $self->cgi()->header( 
+    print $self->cgi()->header(
         -type => ($props->{'svn:mime-type'} || 'text/plain')
         );
     print $buffer;
@@ -491,7 +491,7 @@ sub _real_run
 EOF
         return 0;
     }
-    
+
     $self->_calc_rev_num();
     $self->_calc_path();
 
@@ -542,7 +542,7 @@ sub _multi_slashes
     my $self = shift;
     print $self->cgi()->header();
     print "<html><head><title>Wrong URL!</title></head>";
-    print "<body><h1>Wrong URL - Multiple Adjacent Slashes (//) in the URL." . 
+    print "<body><h1>Wrong URL - Multiple Adjacent Slashes (//) in the URL." .
         "</h1></body></html>";
 }
 
@@ -556,7 +556,7 @@ __END__
 
 =head1 NAME
 
-SVN::RaWeb::Light - Lightweight and Fast Browser for a URLed Subversion 
+SVN::RaWeb::Light - Lightweight and Fast Browser for a URLed Subversion
 repository similar to the default Subversion http:// hosting.
 
 =head1 SYNOPSIS
@@ -580,18 +580,18 @@ Repository-Access layer. Its interface emulates that of the default
 Subversion http://-interface, with some improvements.
 
 To use it, install the module (using CPAN or by copying it to your path) and
-write the CGI script given in the SYNOPSIS with the URL to the repository 
+write the CGI script given in the SYNOPSIS with the URL to the repository
 passed as the C<'url'> parameter to the constructor.
 
-To use it just fire up a web-browser to the URL of the script. 
+To use it just fire up a web-browser to the URL of the script.
 
 =head2 URL Translations
 
-URL translations are a method to translate the current path of the script to 
-to a URL. The latter is usually a URL of the Subversioned resource, which can 
+URL translations are a method to translate the current path of the script to
+to a URL. The latter is usually a URL of the Subversioned resource, which can
 be manipulated directly using the C<svn> client and other clients.
 
-One can specify pre-defined URL translations, inside the value of the 
+One can specify pre-defined URL translations, inside the value of the
 C<'url_translations'> argument:
 
     #!/usr/bin/perl -w
@@ -600,7 +600,7 @@ C<'url_translations'> argument:
 
     my $app = SVN::RaWeb::Light->new(
         'url' => "svn://svn.berlios.de/web-cpan/",
-        'url_translations' => 
+        'url_translations' =>
         [
             {
                 'label' => "Read/Write URL",
@@ -616,7 +616,7 @@ C<'url_translations'> argument:
     $app->run();
 
 C<label> specifies the label as would appear on the page. C<url> is the URL
-relative to the script's base directory. The complete path would be the 
+relative to the script's base directory. The complete path would be the
 URL in the URL translation appended by the path that the script points to.
 
 =head1 METHODS

@@ -5,7 +5,7 @@ use strict;
 
 use Test::More tests => 39;
 
-# We need to load the mocking modules first because they fill the 
+# We need to load the mocking modules first because they fill the
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
 # the real modules to be loaded.
 use SVN::RaWeb::Light::Mock::CGI;
@@ -65,7 +65,7 @@ package main;
     );
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
         );
@@ -101,7 +101,7 @@ package main;
     );
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/"
         );
@@ -147,12 +147,12 @@ package main;
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
-        "<html><head><title>Does not exist!</title></head>" . 
+    is($results, ("Content-Type: text/html\n\n" .
+        "<html><head><title>Does not exist!</title></head>" .
         "<body><h1>Does not exist!</h1></body></html>"),
         "Checking for correct results for non-existent file"
     );
@@ -186,12 +186,12 @@ package main;
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
-        "<html><head><title>Does not exist!</title></head>" . 
+    is($results, ("Content-Type: text/html\n\n" .
+        "<html><head><title>Does not exist!</title></head>" .
         "<body><h1>Does not exist!</h1></body></html>"),
         "Checking for correct results for unknown file"
     );
@@ -228,12 +228,12 @@ package main;
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -259,12 +259,12 @@ package main;
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
 
-    
-    
+
+
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
+    is($results, ("Content-Type: text/html\n\n" .
         "<html><head><title>Revision 10900: /trunk/mydir</title></head>\n" .
         "<body>\n" .
         "<h2>Revision 10900: /trunk/mydir</h2>\n" .
@@ -312,12 +312,12 @@ package main;
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'yowza.txt' => 
-                    { 
+                    'yowza.txt' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'the-directory' =>
@@ -346,11 +346,11 @@ package main;
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
+    is($results, ("Content-Type: text/html\n\n" .
         "<html><head><title>Revision 10900: /</title></head>\n" .
         "<body>\n" .
         "<h2>Revision 10900: /</h2>\n" .
@@ -362,16 +362,16 @@ package main;
         "<ul>\n" .
         "<li><a href=\"./?mode=help\">Show Help Screen</a></li>\n" .
         "<li><a href=\"./?panel=1\">Show Control Panel</a></li>\n" .
-        "</ul>\n" .        
+        "</ul>\n" .
         "</body></html>\n"),
         "Checking for valid output of a dir listing in root");
 }
 
 # Testing for a directory with a specified revision.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
-        'path_info' => "/trunk/subversion/", 
+        'path_info' => "/trunk/subversion/",
         'params' =>
         {
             'rev' => 150,
@@ -406,12 +406,12 @@ package main;
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'yowza.txt' => 
-                    { 
+                    'yowza.txt' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'the-directory' =>
@@ -435,7 +435,7 @@ package main;
         );
 
     $svn_ra_web->run();
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -492,8 +492,8 @@ package main;
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
-        "<html><body>\nTesting One tWO t|-||/33 - " . 
+    is($results, ("Content-Type: text/html\n\n" .
+        "<html><body>\nTesting One tWO t|-||/33 - " .
         "Subversion ownz.\n</body></html>"),
         "Testing for get_file()"
     );
@@ -543,17 +543,17 @@ package main;
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/plain\n\n" . 
+    is($results, ("Content-Type: text/plain\n\n" .
         "Yo, yo, yo!\nTime to get busy...\n"),
         "Checking for retrieving a file with no mime type."
     );
 }
 
 # Check that if the script is hosted at http://myhost.foo/serve.pl, and the
-# URL accessed is "http://myhost.foo/serve.pl" then it should redirect to 
+# URL accessed is "http://myhost.foo/serve.pl" then it should redirect to
 # http://myhost.foo/serve.pl/.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "",
         'script_name' => "/cgi-bin/shlomi/serve-67jyumber200.pl",
@@ -604,7 +604,7 @@ package main;
     # TEST
     is($exception->{'type'}, "redirect", "Excpecting type redirect");
     # TEST
-    is($exception->{'redirect_to'}, "./serve-67jyumber200.pl/", 
+    is($exception->{'redirect_to'}, "./serve-67jyumber200.pl/",
         "Right redirect URL");
 }
 
@@ -639,12 +639,12 @@ package main;
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -680,7 +680,7 @@ package main;
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -695,13 +695,13 @@ package main;
 <li><a href=\"mydir/\">mydir/</a> [<a href="svn://svn.myhost.mytld/hello/there/trunk/mydir/mydir/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/trunk/mydir/mydir/">Write</a>]</li>
 </ul>
 EOF
-    , "Check for url_translations of a regular (non-root) directory.");        
+    , "Check for url_translations of a regular (non-root) directory.");
 }
 
 # Check for url_translations of a regular (non-root) directory.
 # With trans_no_list=1.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "/trunk/mydir/",
         'params' =>
@@ -738,12 +738,12 @@ EOF
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -779,7 +779,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -800,7 +800,7 @@ EOF
 # Check for url_translations of a regular (non-root) directory.
 # With trans_hide_all=1.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "/trunk/mydir/",
         'params' =>
@@ -838,12 +838,12 @@ EOF
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -879,7 +879,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -899,7 +899,7 @@ EOF
 # Check for url_translations of a regular (non-root) directory.
 # With trans_hide_all=1 and trans_no_list.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "/trunk/mydir/",
         'params' =>
@@ -938,12 +938,12 @@ EOF
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -979,7 +979,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -1027,12 +1027,12 @@ EOF
             {
                 die "Wrong rev_num - $rev_num";
             }
-    
-            return 
+
+            return
             (
                 {
-                    'hello.pm' => 
-                    { 
+                    'hello.pm' =>
+                    {
                         'kind' => $SVN::Node::file,
                     },
                     'mydir' =>
@@ -1068,7 +1068,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -1082,13 +1082,13 @@ EOF
 <li><a href=\"mydir/\">mydir/</a> [<a href="svn://svn.myhost.mytld/hello/there/mydir/">Read-Only</a>] [<a href="svn+ssh://svnwrite.myhost.mytld/root/myroot/mydir/">Write</a>]</li>
 </ul>
 EOF
-    , "Check for url_translations of a regular (non-root) directory.");        
+    , "Check for url_translations of a regular (non-root) directory.");
 }
 
 
 # Check for the help being displayed properly.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "/",
         'params' =>
@@ -1124,7 +1124,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST
@@ -1139,10 +1139,10 @@ EOF
         "Check for a valid help screen - h1");
 }
 
-# Check for the panel parameter displaying an error notice - temporarily 
+# Check for the panel parameter displaying an error notice - temporarily
 # until it's implemented.
 {
-    local @CGI::new_params = 
+    local @CGI::new_params =
     (
         'path_info' => "/",
         'params' =>
@@ -1178,7 +1178,7 @@ EOF
 
     # TEST
     ok(!$@, "Testing that no exception was thrown.");
-    
+
     my $results = get_out_buffer();
 
     # TEST

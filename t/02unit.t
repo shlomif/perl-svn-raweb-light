@@ -5,7 +5,7 @@ use strict;
 
 use Test::More tests => 18;
 
-# We need to load the mocking modules first because they fill the 
+# We need to load the mocking modules first because they fill the
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
 # the real modules to be loaded.
 use SVN::RaWeb::Light::Mock::CGI;
@@ -26,10 +26,10 @@ use SVN::RaWeb::Light;
     my $results = get_out_buffer();
 
     # TEST
-    is($results, ("Content-Type: text/html\n\n" . 
-        "<html><head><title>Wrong URL!</title></head>" . 
-        "<body><h1>Wrong URL - Multiple Adjacent Slashes (//) in the URL." . 
-        "</h1></body></html>"), 
+    is($results, ("Content-Type: text/html\n\n" .
+        "<html><head><title>Wrong URL!</title></head>" .
+        "<body><h1>Wrong URL - Multiple Adjacent Slashes (//) in the URL." .
+        "</h1></body></html>"),
         "Checking validity of multi_slashes()"
     );
 }
@@ -45,7 +45,7 @@ use SVN::RaWeb::Light;
     my $url_trans = $svn_ra_web->_get_url_translations();
 
     # TEST
-    is (ref($url_trans), "ARRAY", 
+    is (ref($url_trans), "ARRAY",
         "Checking for url_trans being proper array reference");
     # TEST
     ok ((scalar(@$url_trans) == 0), "Checking for url_trans being empty array");
@@ -57,7 +57,7 @@ use SVN::RaWeb::Light;
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
             'url_translations' =>
@@ -76,11 +76,11 @@ use SVN::RaWeb::Light;
     my $url_trans = $svn_ra_web->_get_url_translations();
 
     # TEST
-    is (ref($url_trans), "ARRAY", 
+    is (ref($url_trans), "ARRAY",
         "Checking for url_trans being proper array reference");
     # TEST
     is_deeply(
-        $url_trans, 
+        $url_trans,
         [
             {
                 'url' => "svn://svn-i.nodomain.foo/hello/",
@@ -98,9 +98,9 @@ use SVN::RaWeb::Light;
 # Unit tests for calc_rev_num()
 
 {
-    @CGI::new_params = 
+    @CGI::new_params =
     (
-        'path_info' => "/trunk/build.txt", 
+        'path_info' => "/trunk/build.txt",
         'params' =>
         {
             'rev' => "600",
@@ -110,7 +110,7 @@ use SVN::RaWeb::Light;
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
@@ -118,20 +118,20 @@ use SVN::RaWeb::Light;
     $svn_ra_web->_calc_rev_num();
 
     # TEST
-    is($svn_ra_web->rev_num(), "600", 
+    is($svn_ra_web->rev_num(), "600",
         "Checking for validity of rev_num() when it's explicitly speicified"
     );
 
     # TEST
-    is($svn_ra_web->url_suffix(), "?rev=600", 
+    is($svn_ra_web->url_suffix(), "?rev=600",
         "Checking for url_suffix() when rev is speicified"
     );
 }
 
 {
-    @CGI::new_params = 
+    @CGI::new_params =
     (
-        'path_info' => "/trunk/build.txt", 
+        'path_info' => "/trunk/build.txt",
     );
 
     @SVN::Ra::new_params =
@@ -141,7 +141,7 @@ use SVN::RaWeb::Light;
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
@@ -154,20 +154,20 @@ use SVN::RaWeb::Light;
     );
 
     # TEST
-    is($svn_ra_web->url_suffix(), "", 
+    is($svn_ra_web->url_suffix(), "",
         "Checking url_suffix() when rev isn't speicified"
     );
 }
 
 {
-    @CGI::new_params = 
+    @CGI::new_params =
     (
-        'path_info' => "/trunk/build.txt", 
+        'path_info' => "/trunk/build.txt",
     );
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
@@ -184,14 +184,14 @@ use SVN::RaWeb::Light;
 }
 
 {
-    @CGI::new_params = 
+    @CGI::new_params =
     (
-        'path_info' => "/trunk/src/perl/", 
+        'path_info' => "/trunk/src/perl/",
     );
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
@@ -209,12 +209,12 @@ use SVN::RaWeb::Light;
 
 # Unit tests for calc_rev_num()
 
-# Checking that url_suffix() is valid if rev is not specified, but 
+# Checking that url_suffix() is valid if rev is not specified, but
 # query_string is not empty.
 {
-    @CGI::new_params = 
+    @CGI::new_params =
     (
-        'path_info' => "/trunk/build.txt", 
+        'path_info' => "/trunk/build.txt",
         'params' =>
         {
             'trans_hide_all' => 1,
@@ -224,7 +224,7 @@ use SVN::RaWeb::Light;
 
     reset_out_buffer();
 
-    my $svn_ra_web = 
+    my $svn_ra_web =
         SVN::RaWeb::Light->new(
             'url' => "http://svn-i.shlomifish.org/svn/myrepos/",
         );
@@ -232,7 +232,7 @@ use SVN::RaWeb::Light;
     $svn_ra_web->_calc_rev_num();
 
     # TEST
-    is($svn_ra_web->url_suffix(), "?trans_hide_all=1", 
+    is($svn_ra_web->url_suffix(), "?trans_hide_all=1",
         "Checking for url_suffix() when rev is speicified"
     );
 }
@@ -261,7 +261,7 @@ sub my_url_suffix_test
         );
 
     is(
-        $svn_ra_web->_get_url_suffix_with_extras(@{$args{'func_params'}}), 
+        $svn_ra_web->_get_url_suffix_with_extras(@{$args{'func_params'}}),
         $args{'result'},
         $args{'msg'}
     );
