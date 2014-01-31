@@ -6,10 +6,6 @@ MANIFEST
 META.json
 META.yml                                 Module meta-data (added by MakeMaker)
 README
-SVN/RaWeb/Light/Mock/CGI.pm
-SVN/RaWeb/Light/Mock/Stdout.pm
-SVN/RaWeb/Light/Mock/Svn.pm
-SVN/RaWeb/Light/Test/LimitOutput.pm
 TODO
 docs/Help.html
 examples/berlios.pl
@@ -22,6 +18,10 @@ t/03trans_unit.t
 t/04exceptions.t
 t/SVN-RaWeb-Light.t
 t/cpan-changes.t
+t/lib/SVN/RaWeb/Light/Mock/CGI.pm
+t/lib/SVN/RaWeb/Light/Mock/Stdout.pm
+t/lib/SVN/RaWeb/Light/Mock/Svn.pm
+t/lib/SVN/RaWeb/Light/Test/LimitOutput.pm
 t/pod-coverage.t
 t/pod.t
 t/style-trailing-space.t

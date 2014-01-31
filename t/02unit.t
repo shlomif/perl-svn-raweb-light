@@ -8,6 +8,8 @@ use Test::More tests => 18;
 # We need to load the mocking modules first because they fill the
 # namespaces and %INC. Otherwise, "use CGI" and "use SVN::*" will cause
 # the real modules to be loaded.
+use lib './t/lib';
+
 use SVN::RaWeb::Light::Mock::CGI;
 use SVN::RaWeb::Light::Mock::Svn;
 use SVN::RaWeb::Light::Mock::Stdout;

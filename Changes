@@ -5,6 +5,7 @@ Revision history for Perl extension SVN::RaWeb::Light.
     - Fix the generation of ::Help.
     - Add t/cpan-changes.t and t/style-trailing-space.t - fix their problems.
     - Remove Makefile.PL - it was old and broken.
+    - Move the Mocks and Tests under ./t/lib .
 
 0.60002 2011-06-04
     - Add more modules to the dependencies, including SVN::Core
