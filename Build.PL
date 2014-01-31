@@ -44,7 +44,7 @@ my $build = Test::Run::Builder->new(
         'lib' => 0,
         'Module::Build' => '0.36',
     },
-    license => "bsd",
+    license => 'mit',
     dist_author => 'Shlomi Fish <shlomif@iglu.org.il>',
 );
 
