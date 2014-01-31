@@ -13,7 +13,7 @@ configure_requires:
   lib: 0
 dynamic_config: 1
 generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132830'
-license: bsd
+license: mit
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
@@ -33,5 +33,5 @@ requires:
   vars: 0
   warnings: 0
 resources:
-  license: http://www.opensource.org/licenses/bsd-license.php
+  license: http://www.opensource.org/licenses/mit-license.php
 version: 0.60002
