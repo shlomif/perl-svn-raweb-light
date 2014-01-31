@@ -6,7 +6,6 @@ docs/Help.html
 examples/berlios.pl
 inc/SVN/RaWeb/Light/GenHelp.pm
 inc/Test/Run/Builder.pm
-lib/SVN/RaWeb/Light/Help.pm
 lib/SVN/RaWeb/Light.pm
 Makefile.PL
 MANIFEST
@@ -24,3 +23,4 @@ TODO
 t/pod-coverage.t
 t/pod.t
 t/SVN-RaWeb-Light.t
+META.json

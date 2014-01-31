@@ -1,10 +1,32 @@
 use strict;
 use warnings;
 
+use autodie;
+
+sub _slurp
+{
+    my $filename = shift;
+
+    open my $in, '<', $filename
+        or die "Cannot open '$filename' for slurping - $!";
+
+    local $/;
+    my $contents = <$in>;
+
+    close($in);
+
+    return $contents;
+}
+
+use File::Path qw(mkpath);
+
 sub _gen_help
 {
-open O, ">", "lib/SVN/RaWeb/Light/Help.pm";
-print O <<"EOF";
+    my $dir = "lib/SVN/RaWeb/Light";
+    mkpath ($dir);
+
+open my $out_fh, ">", "$dir/Help.pm";
+print {$out_fh} <<"EOF";
 package SVN::RaWeb::Light::Help;
 
 use strict;
@@ -46,15 +68,10 @@ sub print_data
 1;
 EOF
 
-print O "__DATA__\n";
+    print {$out_fh} "__DATA__\n";
 
-{
-    local $/;
-    open I, "<", "docs/Help.html";
-    print O <I>;
-    close(I);
-}
-close(O);
+    print {$out_fh} _slurp("docs/Help.html");
+    close ($out_fh);
 }
 
 1;
