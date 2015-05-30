@@ -46,6 +46,23 @@ my $build = Test::Run::Builder->new(
     },
     license => 'mit',
     dist_author => 'Shlomi Fish <shlomif@iglu.org.il>',
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => "https://bitbucket.org/shlomif/perl-svn-raweb-light",
+            homepage => "http://web-cpan.shlomifish.org/modules/SVN-RaWeb-Light/",
+        },
+        keywords =>
+        [
+            "browser",
+            "light",
+            "subversion",
+            "vcs",
+            "web",
+            "www",
+        ],
+    },
 );
 
 $build->create_build_script;

@@ -1,5 +1,8 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.60004 2015-05-30
+    - Add resources/keywords to META.yml.
+
 0.60003 2014-01-31
     - Minimum version of perl is 5.8.x (CPANTS).
     - Fix the generation of ::Help.
