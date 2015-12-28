@@ -1,5 +1,8 @@
 Revision history for Perl extension SVN::RaWeb::Light.
 
+0.60006 2015-12-28
+    - Update E-mail address.
+
 0.60004 2015-05-30
     - Add resources/keywords to META.yml.
 

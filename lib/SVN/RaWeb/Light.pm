@@ -6,7 +6,7 @@ use warnings;
 use 5.008;
 use vars qw($VERSION);
 
-$VERSION = '0.60004';
+$VERSION = '0.60005';
 
 use CGI ();
 use IO::Scalar;
@@ -631,7 +631,7 @@ Runs it in the current process.
 
 =head1 AUTHOR
 
-Shlomi Fish, E<lt>shlomif@iglu.org.ilE<gt>
+Shlomi Fish, L<http://www.shlomifish.org/> .
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -45,7 +45,7 @@ my $build = Test::Run::Builder->new(
         'Module::Build' => '0.36',
     },
     license => 'mit',
-    dist_author => 'Shlomi Fish <shlomif@iglu.org.il>',
+    dist_author => 'Shlomi Fish',
     meta_merge =>
     {
         resources =>
